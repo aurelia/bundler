@@ -1,0 +1,27 @@
+{
+  "name": "aurelia-bundler",
+  "version": "0.1.0",
+  "description": "A library for bundling JavaScript, HTML and CSS for use with SystemJS.",
+  "keywords": [
+    "aurelia",
+    "systemjs",
+    "bundling",
+    "HTML",
+    "JavaScript",
+    "CSS"
+  ],
+  "homepage": "http://aurelia.io",
+  "bugs": {
+    "url": "https://github.com/aurelia/bundler/issues"
+  },
+  "license": "MIT",
+  "author": "Rob Eisenberg <rob@bluespire.com> (http://robeisenberg.com/)",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/aurelia/bundler"
+  },
+  "devDependencies": {
+
+  }
+}
