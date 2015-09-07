@@ -2,43 +2,81 @@
 
 var _Object$keys = require('babel-runtime/core-js/object/keys')['default'];
 
+var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
+
+var _interopRequireWildcard = require('babel-runtime/helpers/interop-require-wildcard')['default'];
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
 exports['default'] = bundle;
 
-var _jsBundler = require('./js-bundler');
+var _bluebird = require('bluebird');
 
-var _templateBundler = require('./template-bundler');
+var _bluebird2 = _interopRequireDefault(_bluebird);
 
-function bundle(config) {
-  var jsConfig = config.js;
-  var templateConfig = config.template;
+var _bundler = require('./bundler');
 
-  _Object$keys(jsConfig).forEach(function (key) {
-    var cfg = jsConfig[key];
-    var outfile = key + '.js';
-    var opt = cfg.options;
+var bundler = _interopRequireWildcard(_bundler);
 
-    opt.force = config.force;
-    opt.packagePath = config.packagePath;
+var _htmlImportTemplateBundler = require('./html-import-template-bundler');
 
-    (0, _jsBundler.bundleJS)(cfg.modules, outfile, opt);
+var hitb = _interopRequireWildcard(_htmlImportTemplateBundler);
+
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+function bundle(_config) {
+
+  var tasks = [];
+  var config = _lodash2['default'].defaults(_config, {
+    force: false,
+    packagePath: '.',
+    bundles: {}
   });
 
-  if (!templateConfig) return;
+  var bundles = config.bundles;
 
-  _Object$keys(templateConfig).forEach(function (key) {
-    var cfg = templateConfig[key];
-    var outfile = key + '.html';
-    var pattern = cfg.pattern;
-    var opt = cfg.options;
+  _Object$keys(bundles).forEach(function (key) {
 
-    opt.force = config.force;
-    opt.packagePath = config.packagePath;
+    var cfg = bundles[key];
 
-    (0, _templateBundler.bundleTemplate)(pattern, outfile, opt);
+    if (cfg.htmlimport) {
+      tasks.push(_bundleHtmlImportTemplate(cfg, key, config));
+    } else {
+      tasks.push(_bundle(cfg, key, config));
+    }
   });
+
+  return _bluebird2['default'].all(tasks);
 }
 
+function _bundle(_cfg, name, config) {
+
+  var cfg = _lodash2['default'].defaults(_cfg, {
+    includes: [],
+    excludes: []
+  });
+
+  var outfile = name + '.js';
+  var opt = cfg.options;
+
+  opt.force = config.force;
+  opt.packagePath = config.packagePath;
+
+  return bundler.bundle(cfg.includes, cfg.excludes, outfile, opt);
+}
+
+function _bundleHtmlImportTemplate(cfg, name, config) {
+
+  var outfile = name + '.html';
+  var src = cfg.src;
+  var opt = cfg.options;
+
+  opt.force = config.force;
+  opt.packagePath = config.packagePath;
+
+  return hitb.bundleTemplate(src, outfile, opt);
+}
 module.exports = exports['default'];

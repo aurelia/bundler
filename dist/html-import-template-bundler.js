@@ -5,7 +5,11 @@ var _interopRequireDefault = require('babel-runtime/helpers/interop-require-defa
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-exports.bundleTemplate = bundleTemplate;
+exports.bundle = bundle;
+
+var _bluebird = require('bluebird');
+
+var _bluebird2 = _interopRequireDefault(_bluebird);
 
 var _jspm = require('jspm');
 
@@ -35,7 +39,7 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-function bundleTemplate(pattern, fileName, _opts) {
+function bundle(pattern, fileName, _opts) {
   var templates = [];
 
   var options = _lodash2['default'].defaultsDeep(_opts, {
@@ -44,15 +48,16 @@ function bundleTemplate(pattern, fileName, _opts) {
 
   _jspm2['default'].setPackagePath(options.packagePath);
 
-  var builder = new _jspm2['default'].Builder();
+  var builderCfg = options.builderCfg || {};
+  var builder = new _jspm2['default'].Builder(builderCfg);
   var baseURL = builder.loader.baseURL;
   var cwd = _systemjsBuilderLibUtils2['default'].fromFileURL(baseURL);;
+
   var outfile = _path2['default'].resolve(_systemjsBuilderLibUtils2['default'].fromFileURL(baseURL), fileName);
 
   if (_fs2['default'].existsSync(outfile)) {
     if (!options.force) {
-      console.log('A bundle named `' + outfile + '` is already exists. Use --force to overwrite.');
-      return;
+      throw new Error('A bundle named \'' + outfile + '\' is already exists. Use --force to overwrite.');
     }
     _fs2['default'].unlinkSync(outfile);
   }
@@ -78,6 +83,8 @@ function bundleTemplate(pattern, fileName, _opts) {
   if (options.inject) {
     injectLink(outfile, _systemjsBuilderLibUtils2['default'].fromFileURL(baseURL), options.inject);
   }
+
+  return _bluebird2['default'].resolve();
 }
 
 function injectLink(outfile, baseURL, injectOptions) {
