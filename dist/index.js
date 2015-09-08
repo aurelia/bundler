@@ -71,12 +71,12 @@ function _bundle(_cfg, name, config) {
 function _bundleHtmlImportTemplate(cfg, name, config) {
 
   var outfile = name + '.html';
-  var src = cfg.src;
+  var includes = cfg.includes;
   var opt = cfg.options;
 
   opt.force = config.force;
   opt.packagePath = config.packagePath;
 
-  return hitb.bundle(src, outfile, opt);
+  return hitb.bundle(includes, outfile, opt);
 }
 module.exports = exports['default'];
