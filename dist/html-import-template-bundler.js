@@ -71,7 +71,7 @@ function bundle(pattern, fileName, _opts) {
     });
 
     var $ = _whacko2['default'].load(content);
-    var name = getCanonicalName(builder, file, 'template-registry-entry');
+    var name = getCanonicalName(builder, file, 'view').replace(/!view$/g, '');
 
     $('template').attr('id', name);
     var template = $.html('template');
