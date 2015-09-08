@@ -77,6 +77,6 @@ function _bundleHtmlImportTemplate(cfg, name, config) {
   opt.force = config.force;
   opt.packagePath = config.packagePath;
 
-  return hitb.bundleTemplate(src, outfile, opt);
+  return hitb.bundle(src, outfile, opt);
 }
 module.exports = exports['default'];
