@@ -37,43 +37,49 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
-function unbundle(_opts) {
-  var opts = _lodash2['default'].defaultsDeep(_opts, {
+function unbundle(_config) {
+
+  var config = _lodash2['default'].defaultsDeep(_config, {
+    force: false,
     packagePath: '.',
-    template: {}
+    bundles: {}
   });
 
-  _jspm2['default'].setPackagePath(opts.packagePath);
+  _jspm2['default'].setPackagePath(config.packagePath);
 
   var builder = new _jspm2['default'].Builder();
-  var tasks = [removeBundle(opts), removeHtmlImportBundles(opts, builder)];
+
+  var tasks = [removeBundles(config), removeHtmlImportBundles(config, builder)];
 
   return _bluebird2['default'].all(tasks);
 }
 
-function removeBundle(opts) {
+function removeBundles(config) {
   return _jspm2['default'].unbundle();
 }
 
-function removeTemplateBundles(opts, builder) {
+function removeHtmlImportBundles(config, builder) {
 
   var baseURL = _systemjsBuilderLibUtils2['default'].fromFileURL(builder.loader.baseURL);
-  var tmplCfg = opts.template;
+
   var tasks = [];
 
-  _Object$keys(tmplCfg).forEach(function (key) {
-    var cfg = tmplCfg[key];
-    tasks.push(removeTemplateBundle(cfg.options, baseURL));
+  _Object$keys(config.bundles).forEach(function (key) {
+
+    var cfg = config.bundles[key];
+    if (cfg.htmlimports) {
+      tasks.push(_removeHtmlImportBundle(cfg, baseURL, key));
+    }
   });
 
   return _bluebird2['default'].all(tasks);
 }
 
-function removeTemplateBundle(options, _baseURL) {
+function _removeHtmlImportBundle(_cfg, _baseURL, bundleName) {
 
-  if (!options) _bluebird2['default'].resolve();
+  if (!_cfg) _bluebird2['default'].resolve();
 
-  var inject = options.inject;
+  var inject = cfg.inject;
 
   if (!inject) _bluebird2['default'].resolve();
   if (!_lodash2['default'].isObject(inject)) inject = {};

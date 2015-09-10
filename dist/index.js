@@ -6,6 +6,10 @@ var _interopRequireDefault = require('babel-runtime/helpers/interop-require-defa
 
 var _interopRequireWildcard = require('babel-runtime/helpers/interop-require-wildcard')['default'];
 
+var _defaults = require('babel-runtime/helpers/defaults')['default'];
+
+var _interopExportWildcard = require('babel-runtime/helpers/interop-export-wildcard')['default'];
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -26,6 +30,10 @@ var hitb = _interopRequireWildcard(_htmlImportTemplateBundler);
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
+
+var _unbundle = require('./unbundle');
+
+_defaults(exports, _interopExportWildcard(_unbundle, _defaults));
 
 function bundle(_config) {
 
