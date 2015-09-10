@@ -9,7 +9,7 @@ var _interopRequireWildcard = require('babel-runtime/helpers/interop-require-wil
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-exports['default'] = bundle;
+exports.bundle = bundle;
 
 var _bluebird = require('bluebird');
 
@@ -79,4 +79,3 @@ function _bundleHtmlImportTemplate(cfg, name, config) {
 
   return hitb.bundle(includes, outfile, opt);
 }
-module.exports = exports['default'];

@@ -109,7 +109,7 @@ function injectLink(outfile, baseURL, injectOptions) {
   var $ = _whacko2['default'].load(content);
 
   if ($('link[aurelia-view-bundle][href="' + link + '"]').length === 0) {
-    $('body').append('<link aurelia-view-bundle rel="import" href="' + link + '">');
+    $('head').append('<link aurelia-view-bundle rel="import" href="' + link + '">');
   }
 
   _fs2['default'].writeFileSync(destFile, $.html());
