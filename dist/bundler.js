@@ -73,7 +73,7 @@ function bundle(includes, excludes, fileName, _opts) {
     removeExistingSourceMap(outfile);
   }
 
-  builder.trace(moduleExpression).then(function (tree) {
+  return builder.trace(moduleExpression).then(function (tree) {
     return builder.buildTree(tree, outfile, opts);
   }).then(function (output) {
     delete _jspmLibConfig2['default'].loader.depCache;
