@@ -74,7 +74,7 @@ function bundle(includes, excludes, fileName, _opts) {
   }
 
   return builder.trace(moduleExpression).then(function (tree) {
-    return builder.buildTree(tree, outfile, opts);
+    return builder.bundle(tree, outfile, opts);
   }).then(function (output) {
     delete _jspmLibConfig2['default'].loader.depCache;
     if (opts.inject) injectBundle(builder, fileName, output);
