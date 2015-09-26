@@ -68,7 +68,7 @@ function _bundle(_cfg, name, config) {
   });
 
   var outfile = name + '.js';
-  var opt = cfg.options;
+  var opt = cfg.options || {};
 
   opt.force = config.force;
   opt.packagePath = config.packagePath;
