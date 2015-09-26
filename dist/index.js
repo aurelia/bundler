@@ -64,11 +64,12 @@ function _bundle(_cfg, name, config) {
 
   var cfg = _lodash2['default'].defaults(_cfg, {
     includes: [],
-    excludes: []
+    excludes: [],
+    options: {}
   });
 
   var outfile = name + '.js';
-  var opt = cfg.options || {};
+  var opt = cfg.options;
 
   opt.force = config.force;
   opt.packagePath = config.packagePath;
