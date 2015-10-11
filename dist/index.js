@@ -64,7 +64,8 @@ function _bundle(_cfg, name, config) {
 
   var cfg = _lodash2['default'].defaults(_cfg, {
     includes: [],
-    excludes: []
+    excludes: [],
+    options: {}
   });
 
   var outfile = name + '.js';
