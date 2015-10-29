@@ -103,7 +103,8 @@ function getFullModuleName(moduleName, map) {
 
   var matches = [];
   _Object$keys(map).forEach(function (m) {
-    if (m.replace(/^.*:/, '').replace(/@.*$/, '') === plainPackageName) {
+    var value = map[m];
+    if (value instanceof String && m.replace(/^.*:/, '').replace(/@.*$/, '') === plainPackageName) {
       matches.push(m);
     }
   });
