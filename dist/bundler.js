@@ -100,11 +100,10 @@ function removeExistingSourceMap(outfile) {
 
 function getFullModuleName(moduleName, map) {
   var plainPackageName = moduleName.replace(/^.*:/, '');
-
   var matches = [];
   _Object$keys(map).forEach(function (m) {
-    var value = map[m];
-    if (value instanceof String && m.replace(/^.*:/, '').replace(/@.*$/, '') === plainPackageName) {
+    var strippedName = m.replace(/^.*:/, '').replace(/@.*$/, '');
+    if (strippedName === plainPackageName) {
       matches.push(m);
     }
   });
