@@ -35,14 +35,24 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
+var _revHash = require('rev-hash');
+
+var _revHash2 = _interopRequireDefault(_revHash);
+
+var _revPath = require('rev-path');
+
+var _revPath2 = _interopRequireDefault(_revPath);
+
 function bundle(includes, excludes, fileName, _opts) {
   var opts = _lodash2['default'].defaultsDeep(_opts, {
-    packagePath: '.'
+    packagePath: '.',
+    rev: false
   });
 
   _jspm2['default'].setPackagePath(opts.packagePath);
 
   var builderCfg = opts.builderCfg || {};
+
   var builder = new _jspm2['default'].Builder(builderCfg);
   var outfile = _path2['default'].resolve((0, _systemjsBuilderLibUtils.fromFileURL)(builder.loader.baseURL), fileName);
 
@@ -74,17 +84,28 @@ function bundle(includes, excludes, fileName, _opts) {
   }
 
   return builder.trace(moduleExpression).then(function (tree) {
-    return builder.bundle(tree, outfile, opts);
+    return builder.bundle(tree, opts);
   }).then(function (output) {
+    var hash = '';
+    if (opts.rev) {
+      hash = (0, _revHash2['default'])(new Buffer(output.source, 'utf-8'));
+      var hasedOutfile = (0, _revPath2['default'])(outfile, hash);
+      _fs2['default'].writeFileSync(hasedOutfile, output.source);
+    } else {
+      _fs2['default'].writeFileSync(outfile, output.source);
+    }
+
     delete _jspmLibConfig2['default'].loader.depCache;
-    if (opts.inject) injectBundle(builder, fileName, output);
+    if (opts.inject) injectBundle(builder, fileName, output, opts, hash);
   }).then(_jspmLibConfig2['default'].save);
 }
 
 ;
 
-function injectBundle(builder, fileName, output) {
-  var bundleName = builder.getCanonicalName((0, _systemjsBuilderLibUtils.toFileURL)(_path2['default'].resolve(_jspmLibConfig2['default'].pjson.baseURL, fileName)));
+function injectBundle(builder, fileName, output, opts, hash) {
+  var fname = opts.rev ? (0, _revPath2['default'])(fileName, hash) : fileName;
+
+  var bundleName = builder.getCanonicalName((0, _systemjsBuilderLibUtils.toFileURL)(_path2['default'].resolve(_jspmLibConfig2['default'].pjson.baseURL, fname)));
   if (!_jspmLibConfig2['default'].loader.bundles) {
     _jspmLibConfig2['default'].loader.bundles = {};
   }
