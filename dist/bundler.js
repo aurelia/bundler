@@ -8,6 +8,7 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 exports.bundle = bundle;
+exports.getFullModuleName = getFullModuleName;
 
 var _jspm = require('jspm');
 
@@ -120,22 +121,30 @@ function removeExistingSourceMap(outfile) {
 }
 
 function getFullModuleName(moduleName, map) {
-  var plainPackageName = moduleName.replace(/^.*:/, '');
   var matches = [];
-  _Object$keys(map).forEach(function (m) {
-    var strippedName = m.replace(/^.*:/, '').replace(/@.*$/, '');
-    if (strippedName === plainPackageName) {
-      matches.push(m);
-    }
+  var cleanName = function cleanName(n) {
+    return n.replace(/^.*:/, '').replace(/@.*$/, '');
+  };
+
+  matches = _Object$keys(map).filter(function (m) {
+    return m === moduleName;
   });
+
+  if (matches.length === 1) {
+    return moduleName;
+  }
+
+  matches = _Object$keys(map).filter(function (m) {
+    return cleanName(m) === cleanName(moduleName);
+  });
+
+  if (matches.length === 1) {
+    return matches[0];
+  }
 
   if (matches.length === 0) {
     return moduleName;
   }
 
-  if (matches.length > 1) {
-    throw new Error('Version conflict found in module names specified in configuration for \'' + moduleName + '\'. Try including a specific version or resolve the conflict manually with jspm');
-  }
-
-  return matches[0];
+  throw new Error('Version conflict found in module names specified in configuration for \'' + moduleName + '\'. Try including  full module name with a specific version number or resolve the conflict manually with jspm');
 }
