@@ -55,14 +55,6 @@ function bundle(includes, excludes, fileName, _opts) {
   var builderCfg = opts.builderCfg || {};
 
   var builder = new _jspm2['default'].Builder(builderCfg);
-  var outfile = _path2['default'].resolve((0, _systemjsBuilderLibUtils.fromFileURL)(builder.loader.baseURL), fileName);
-
-  if (_fs2['default'].existsSync(outfile)) {
-    if (!opts.force) {
-      throw new Error('A bundle named \'' + outfile + '\' is already exists. Use --force to overwrite.');
-    }
-    _fs2['default'].unlinkSync(outfile);
-  }
 
   var includeExpression = includes.map(function (m) {
     return getFullModuleName(m, _jspmLibConfig2['default'].loader.__originalConfig.map);
@@ -72,52 +64,53 @@ function bundle(includes, excludes, fileName, _opts) {
   }).join(' - ');
 
   var moduleExpression = includeExpression;
+
   if (excludeExpression && excludeExpression.length > 0) {
     moduleExpression = moduleExpression + ' - ' + excludeExpression;
-  }
-
-  if (!('lowResSourceMaps' in opts)) {
-    opts.lowResSourceMaps = true;
-  }
-
-  if (!opts.sourceMaps) {
-    removeExistingSourceMap(outfile);
   }
 
   return builder.trace(moduleExpression).then(function (tree) {
     return builder.bundle(tree, opts);
   }).then(function (output) {
-    var hash = '';
-    if (opts.rev) {
-      hash = (0, _revHash2['default'])(new Buffer(output.source, 'utf-8'));
-      var hasedOutfile = (0, _revPath2['default'])(outfile, hash);
-      _fs2['default'].writeFileSync(hasedOutfile, output.source);
-    } else {
-      _fs2['default'].writeFileSync(outfile, output.source);
-    }
+
+    var outfile = getOutFileName(output, fileName, opts.rev);
+    writeOutput(output, outfile, builder.loader.baseURL, opts.force);
 
     delete _jspmLibConfig2['default'].loader.depCache;
-    if (opts.inject) injectBundle(builder, fileName, output, opts, hash);
+    if (opts.inject) injectBundle(builder, output, outfile);
   }).then(_jspmLibConfig2['default'].save);
 }
 
 ;
 
-function injectBundle(builder, fileName, output, opts, hash) {
-  var fname = opts.rev ? (0, _revPath2['default'])(fileName, hash) : fileName;
+function getOutFileName(output, fileName, rev) {
+  return rev ? (0, _revPath2['default'])(fileName, (0, _revHash2['default'])(new Buffer(output.source, 'utf-8'))) : fileName;
+}
 
-  var bundleName = builder.getCanonicalName((0, _systemjsBuilderLibUtils.toFileURL)(_path2['default'].resolve(_jspmLibConfig2['default'].pjson.baseURL, fname)));
+function writeOutput(output, outfile, baseURL, force) {
+
+  var outPath = _path2['default'].resolve((0, _systemjsBuilderLibUtils.fromFileURL)(baseURL), outfile);
+
+  if (_fs2['default'].existsSync(outPath)) {
+    if (!force) {
+      throw new Error('A bundle named \'' + outPath + '\' is already exists. Use --force to overwrite.');
+    }
+
+    _fs2['default'].unlinkSync(outPath);
+  }
+
+  _fs2['default'].writeFileSync(outPath, output.source);
+}
+
+function injectBundle(builder, output, outfile) {
+
+  var bundleName = builder.getCanonicalName((0, _systemjsBuilderLibUtils.toFileURL)(_path2['default'].resolve(_jspmLibConfig2['default'].pjson.baseURL, outfile)));
+
   if (!_jspmLibConfig2['default'].loader.bundles) {
     _jspmLibConfig2['default'].loader.bundles = {};
   }
-  _jspmLibConfig2['default'].loader.bundles[bundleName] = output.modules;
-}
 
-function removeExistingSourceMap(outfile) {
-  var mapFile = outfile + '.map';
-  if (_fs2['default'].existsSync(mapFile)) {
-    _fs2['default'].unlinkSync(mapFile);
-  }
+  _jspmLibConfig2['default'].loader.bundles[bundleName] = output.modules;
 }
 
 function getFullModuleName(moduleName, map) {
