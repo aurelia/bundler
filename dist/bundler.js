@@ -110,7 +110,7 @@ function injectBundle(builder, output, outfile) {
     _jspmLibConfig2['default'].loader.bundles = {};
   }
 
-  _jspmLibConfig2['default'].loader.bundles[bundleName] = output.modules;
+  _jspmLibConfig2['default'].loader.bundles[bundleName] = output.modules.sort();
 }
 
 function getFullModuleName(moduleName, map) {
