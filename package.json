@@ -35,7 +35,7 @@
     "rev-hash": "^1.0.0",
     "rev-path": "^1.0.0",
     "systemjs-builder": "^0.14.6",
-    "whacko": "^0.18.1"
+    "whacko": "^0.19.1"
   },
   "devDependencies": {
     "babel": "^5.4.7",
