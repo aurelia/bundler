@@ -38,9 +38,12 @@ _defaults(exports, _interopExportWildcard(_unbundle, _defaults));
 function bundle(_config) {
 
   var tasks = [];
+
   var config = _lodash2['default'].defaults(_config, {
     force: false,
-    packagePath: '.',
+    baseURL: '.',
+    configPath: '.',
+    builderCfg: {},
     bundles: {}
   });
 
@@ -61,21 +64,24 @@ function bundle(_config) {
   return _bluebird2['default'].all(tasks);
 }
 
-function _bundle(_cfg, name, config) {
+function _bundle(_bundleCfg, bundleName, config) {
 
-  var cfg = _lodash2['default'].defaults(_cfg, {
+  var bundleCfg = _lodash2['default'].defaults(_bundleCfg, {
     includes: [],
     excludes: [],
-    options: {}
+    options: {
+      rev: false,
+      minify: false,
+      inject: true
+    },
+    bundleName: bundleName,
+    force: config.force,
+    baseURL: config.baseURL,
+    configPath: config.configPath,
+    builderCfg: config.builderCfg
   });
 
-  var outfile = name + '.js';
-  var opt = cfg.options;
-
-  opt.force = config.force;
-  opt.packagePath = config.packagePath;
-
-  return bundler.bundle(cfg.includes, cfg.excludes, outfile, opt);
+  return bundler.bundle(bundleCfg);
 }
 
 function _bundleHtmlImportTemplate(cfg, name, config) {

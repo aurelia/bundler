@@ -11,10 +11,6 @@ var _bluebird = require('bluebird');
 
 var _bluebird2 = _interopRequireDefault(_bluebird);
 
-var _jspm = require('jspm');
-
-var _jspm2 = _interopRequireDefault(_jspm);
-
 var _whacko = require('whacko');
 
 var _whacko2 = _interopRequireDefault(_whacko);
@@ -46,10 +42,10 @@ function bundle(pattern, fileName, _opts) {
     packagePath: '.'
   });
 
-  _jspm2['default'].setPackagePath(options.packagePath);
+  jspm.setPackagePath(options.packagePath);
 
   var builderCfg = options.builderCfg || {};
-  var builder = new _jspm2['default'].Builder(builderCfg);
+  var builder = new jspm.Builder(builderCfg);
   var baseURL = builder.loader.baseURL;
   var cwd = _systemjsBuilderLibUtils2['default'].fromFileURL(baseURL);;
 

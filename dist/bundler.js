@@ -10,14 +10,6 @@ Object.defineProperty(exports, '__esModule', {
 exports.bundle = bundle;
 exports.getFullModuleName = getFullModuleName;
 
-var _jspm = require('jspm');
-
-var _jspm2 = _interopRequireDefault(_jspm);
-
-var _jspmLibConfig = require('jspm/lib/config');
-
-var _jspmLibConfig2 = _interopRequireDefault(_jspmLibConfig);
-
 var _fs = require('fs');
 
 var _fs2 = _interopRequireDefault(_fs);
@@ -27,6 +19,10 @@ var _bluebird = require('bluebird');
 var _bluebird2 = _interopRequireDefault(_bluebird);
 
 var _systemjsBuilderLibUtils = require('systemjs-builder/lib/utils');
+
+var _systemjsBuilder = require('systemjs-builder');
+
+var _systemjsBuilder2 = _interopRequireDefault(_systemjsBuilder);
 
 var _path = require('path');
 
@@ -44,23 +40,20 @@ var _revPath = require('rev-path');
 
 var _revPath2 = _interopRequireDefault(_revPath);
 
-function bundle(includes, excludes, fileName, _opts) {
-  var opts = _lodash2['default'].defaultsDeep(_opts, {
-    packagePath: '.',
-    rev: false
-  });
+var _configSerializer = require('./config-serializer');
 
-  _jspm2['default'].setPackagePath(opts.packagePath);
+function bundle(cfg) {
 
-  var builderCfg = opts.builderCfg || {};
+  var appCfg = (0, _configSerializer.readConfig)(_fs2['default'].readFileSync(cfg.configPath, 'utf8'));
 
-  var builder = new _jspm2['default'].Builder(builderCfg);
+  var builder = new _systemjsBuilder2['default'](cfg.baseURL, cfg.configPath);
+  builder.config(cfg.builderCfg);
 
-  var includeExpression = includes.map(function (m) {
-    return getFullModuleName(m, _jspmLibConfig2['default'].loader.__originalConfig.map);
+  var includeExpression = cfg.includes.map(function (m) {
+    return getFullModuleName(m, appCfg.map);
   }).join(' + ');
-  var excludeExpression = excludes.map(function (m) {
-    return getFullModuleName(m, _jspmLibConfig2['default'].loader.__originalConfig.map);
+  var excludeExpression = cfg.excludes.map(function (m) {
+    return getFullModuleName(m, appCfg.map);
   }).join(' - ');
 
   var moduleExpression = includeExpression;
@@ -70,15 +63,16 @@ function bundle(includes, excludes, fileName, _opts) {
   }
 
   return builder.trace(moduleExpression).then(function (tree) {
-    return builder.bundle(tree, opts);
+    return builder.bundle(tree, cfg.options);
   }).then(function (output) {
 
-    var outfile = getOutFileName(output, fileName, opts.rev);
-    writeOutput(output, outfile, builder.loader.baseURL, opts.force);
+    var outfile = getOutFileName(output, cfg.bundleName + '.js', cfg.options.rev);
+    writeOutput(output, outfile, cfg.baseURL, cfg.force);
 
-    delete _jspmLibConfig2['default'].loader.depCache;
-    if (opts.inject) injectBundle(builder, output, outfile);
-  }).then(_jspmLibConfig2['default'].save);
+    if (cfg.options.inject) {
+      injectBundle(builder, output, outfile, appCfg, cfg);
+    }
+  });
 }
 
 ;
@@ -102,15 +96,14 @@ function writeOutput(output, outfile, baseURL, force) {
   _fs2['default'].writeFileSync(outPath, output.source);
 }
 
-function injectBundle(builder, output, outfile) {
+function injectBundle(builder, output, outfile, appCfg, cfg) {
+  var bundleName = builder.getCanonicalName((0, _systemjsBuilderLibUtils.toFileURL)(_path2['default'].resolve(cfg.baseURL, outfile)));
 
-  var bundleName = builder.getCanonicalName((0, _systemjsBuilderLibUtils.toFileURL)(_path2['default'].resolve(_jspmLibConfig2['default'].pjson.baseURL, outfile)));
-
-  if (!_jspmLibConfig2['default'].loader.bundles) {
-    _jspmLibConfig2['default'].loader.bundles = {};
+  if (!appCfg.bundles) {
+    appCfg.bundles = {};
   }
-
-  _jspmLibConfig2['default'].loader.bundles[bundleName] = output.modules.sort();
+  appCfg.bundles[bundleName] = output.modules.sort();
+  _fs2['default'].writeFileSync(cfg.configPath, (0, _configSerializer.serializeConfig)(appCfg));
 }
 
 function getFullModuleName(moduleName, map) {

@@ -9,10 +9,6 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports.unbundle = unbundle;
 
-var _jspm = require('jspm');
-
-var _jspm2 = _interopRequireDefault(_jspm);
-
 var _bluebird = require('bluebird');
 
 var _bluebird2 = _interopRequireDefault(_bluebird);
@@ -45,9 +41,10 @@ function unbundle(_config) {
     bundles: {}
   });
 
-  _jspm2['default'].setPackagePath(config.packagePath);
+  throw Error('Remove jspm..!');
+  jspm.setPackagePath(config.packagePath);
 
-  var builder = new _jspm2['default'].Builder();
+  var builder = new jspm.Builder();
 
   var tasks = [removeBundles(config), removeHtmlImportBundles(config, builder)];
 
@@ -55,7 +52,7 @@ function unbundle(_config) {
 }
 
 function removeBundles(config) {
-  return _jspm2['default'].unbundle();
+  return jspm.unbundle();
 }
 
 function removeHtmlImportBundles(config, builder) {
