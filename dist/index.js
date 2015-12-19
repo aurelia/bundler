@@ -31,6 +31,8 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
+var _utils = require('./utils');
+
 var _unbundle = require('./unbundle');
 
 _defaults(exports, _interopExportWildcard(_unbundle, _defaults));
@@ -38,15 +40,7 @@ _defaults(exports, _interopExportWildcard(_unbundle, _defaults));
 function bundle(_config) {
 
   var tasks = [];
-
-  var config = _lodash2['default'].defaults(_config, {
-    force: false,
-    baseURL: '.',
-    configPath: '.',
-    builderCfg: {},
-    bundles: {}
-  });
-
+  var config = (0, _utils.getCommonConfig)(_config);
   var bundles = config.bundles;
 
   _Object$keys(bundles).forEach(function (key) {
@@ -65,23 +59,7 @@ function bundle(_config) {
 }
 
 function _bundle(_bundleCfg, bundleName, config) {
-
-  var bundleCfg = _lodash2['default'].defaults(_bundleCfg, {
-    includes: [],
-    excludes: [],
-    options: {
-      rev: false,
-      minify: false,
-      inject: true
-    },
-    bundleName: bundleName,
-    force: config.force,
-    baseURL: config.baseURL,
-    configPath: config.configPath,
-    builderCfg: config.builderCfg
-  });
-
-  return bundler.bundle(bundleCfg);
+  return bundler.bundle((0, _utils.getBundleConfig)(_bundleCfg, bundleName, config));
 }
 
 function _bundleHtmlImportTemplate(cfg, name, config) {

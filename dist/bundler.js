@@ -32,19 +32,13 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _revHash = require('rev-hash');
-
-var _revHash2 = _interopRequireDefault(_revHash);
-
-var _revPath = require('rev-path');
-
-var _revPath2 = _interopRequireDefault(_revPath);
-
 var _configSerializer = require('./config-serializer');
+
+var _utils = require('./utils');
 
 function bundle(cfg) {
 
-  var appCfg = (0, _configSerializer.readConfig)(_fs2['default'].readFileSync(cfg.configPath, 'utf8'));
+  var appCfg = (0, _configSerializer.getAppConfig)(cfg.configPath);
 
   var builder = new _systemjsBuilder2['default'](cfg.baseURL, cfg.configPath);
   builder.config(cfg.builderCfg);
@@ -66,7 +60,7 @@ function bundle(cfg) {
     return builder.bundle(tree, cfg.options);
   }).then(function (output) {
 
-    var outfile = getOutFileName(output, cfg.bundleName + '.js', cfg.options.rev);
+    var outfile = (0, _utils.getOutFileName)(output.source, cfg.bundleName + '.js', cfg.options.rev);
     writeOutput(output, outfile, cfg.baseURL, cfg.force);
 
     if (cfg.options.inject) {
@@ -77,14 +71,8 @@ function bundle(cfg) {
 
 ;
 
-function getOutFileName(output, fileName, rev) {
-  return rev ? (0, _revPath2['default'])(fileName, (0, _revHash2['default'])(new Buffer(output.source, 'utf-8'))) : fileName;
-}
-
 function writeOutput(output, outfile, baseURL, force) {
-
   var outPath = _path2['default'].resolve((0, _systemjsBuilderLibUtils.fromFileURL)(baseURL), outfile);
-
   if (_fs2['default'].existsSync(outPath)) {
     if (!force) {
       throw new Error('A bundle named \'' + outPath + '\' is already exists. Use --force to overwrite.');
@@ -103,7 +91,7 @@ function injectBundle(builder, output, outfile, appCfg, cfg) {
     appCfg.bundles = {};
   }
   appCfg.bundles[bundleName] = output.modules.sort();
-  _fs2['default'].writeFileSync(cfg.configPath, (0, _configSerializer.serializeConfig)(appCfg));
+  (0, _configSerializer.saveAppConfig)(cfg.configPath, appCfg);
 }
 
 function getFullModuleName(moduleName, map) {

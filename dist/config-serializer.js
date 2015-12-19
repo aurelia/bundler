@@ -5,7 +5,10 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports.readConfig = readConfig;
 exports.serializeConfig = serializeConfig;
+exports.getAppConfig = getAppConfig;
+exports.saveAppConfig = saveAppConfig;
 var vm = require('vm');
+var fs = require('fs');
 
 function readConfig(cfgCode) {
   var sandbox = {};
@@ -26,4 +29,12 @@ function readConfig(cfgCode) {
 function serializeConfig(config) {
   var json = JSON.stringify(config, null, 2);
   return 'System.config(' + json + ')';
+}
+
+function getAppConfig(configPath) {
+  return readConfig(fs.readFileSync(configPath, 'utf8'));
+}
+
+function saveAppConfig(configPath, config) {
+  fs.writeFileSync(configPath, serializeConfig(config));
 }

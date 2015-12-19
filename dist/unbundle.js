@@ -33,32 +33,31 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
+var _configSerializer = require('./config-serializer');
+
+var _utils = require('./utils');
+
 function unbundle(_config) {
+  var config = (0, _utils.getCommonConfig)(_config);
 
-  var config = _lodash2['default'].defaultsDeep(_config, {
-    force: false,
-    packagePath: '.',
-    bundles: {}
-  });
-
-  throw Error('Remove jspm..!');
-  jspm.setPackagePath(config.packagePath);
-
-  var builder = new jspm.Builder();
-
-  var tasks = [removeBundles(config), removeHtmlImportBundles(config, builder)];
+  var tasks = [removeBundles(config), removeHtmlImportBundles(config)];
 
   return _bluebird2['default'].all(tasks);
 }
 
-function removeBundles(config) {
-  return jspm.unbundle();
+function removeBundles(cfg) {
+  var appCfg = (0, _configSerializer.getAppConfig)(cfg.configPath);
+
+  delete appCfg.bundles;
+
+  (0, _configSerializer.saveAppConfig)(cfg.configPath, appCfg);
+
+  return _bluebird2['default'].resolve();
 }
 
-function removeHtmlImportBundles(config, builder) {
+function removeHtmlImportBundles(config) {
 
-  var baseURL = _systemjsBuilderLibUtils2['default'].fromFileURL(builder.loader.baseURL);
-
+  var baseURL = _systemjsBuilderLibUtils2['default'].fromFileURL(config.baseURL);
   var tasks = [];
 
   _Object$keys(config.bundles).forEach(function (key) {
