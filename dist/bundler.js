@@ -64,7 +64,7 @@ function bundle(cfg) {
     writeOutput(output, outfile, cfg.baseURL, cfg.force);
 
     if (cfg.options.inject) {
-      injectBundle(builder, output, outfile, appCfg, cfg);
+      injectBundle(builder, output, outfile, cfg);
     }
   });
 }
@@ -84,12 +84,15 @@ function writeOutput(output, outfile, baseURL, force) {
   _fs2['default'].writeFileSync(outPath, output.source);
 }
 
-function injectBundle(builder, output, outfile, appCfg, cfg) {
+function injectBundle(builder, output, outfile, cfg) {
   var bundleName = builder.getCanonicalName((0, _systemjsBuilderLibUtils.toFileURL)(_path2['default'].resolve(cfg.baseURL, outfile)));
+
+  var appCfg = (0, _configSerializer.getAppConfig)(cfg.configPath);
 
   if (!appCfg.bundles) {
     appCfg.bundles = {};
   }
+
   appCfg.bundles[bundleName] = output.modules.sort();
   (0, _configSerializer.saveAppConfig)(cfg.configPath, appCfg);
 }
