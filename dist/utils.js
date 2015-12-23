@@ -7,6 +7,7 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports.getOutFileName = getOutFileName;
 exports.getBundleConfig = getBundleConfig;
+exports.getHtmlImportBundleConfig = getHtmlImportBundleConfig;
 exports.getCommonConfig = getCommonConfig;
 
 var _lodash = require('lodash');
@@ -26,7 +27,7 @@ function getOutFileName(source, fileName, rev) {
 }
 
 function getBundleConfig(_bundleCfg, bundleName, config) {
-  return _lodash2['default'].defaults(_bundleCfg, {
+  return _lodash2['default'].defaultsDeep(_bundleCfg, {
     includes: [],
     excludes: [],
     options: {
@@ -40,6 +41,35 @@ function getBundleConfig(_bundleCfg, bundleName, config) {
     configPath: config.configPath,
     builderCfg: config.builderCfg
   });
+}
+
+function getHtmlImportBundleConfig(_bundleCfg, bundleName, config) {
+  var cfg = _lodash2['default'].defaultsDeep(_bundleCfg, {
+    htmlimport: true,
+    includes: '*.html',
+    bundleName: bundleName,
+    options: {
+      inject: false
+    },
+    force: config.force,
+    baseURL: config.baseURL,
+    configPath: config.configPath,
+    builderCfg: config.builderCfg
+  });
+
+  if (cfg.options.inject) {
+    if (!_lodash2['default'].isObject(cfg.options.inject)) {
+      cfg.options.inject = {
+        indexFile: 'index.html',
+        destFile: 'index.html'
+      };
+    } else {
+      cfg.options.inject.indexFile = cfg.options.inject.indexFile || 'index.html';
+      cfg.options.inject.destFile = cfg.options.inject.destFile || 'index.html';
+    }
+  }
+
+  return cfg;
 }
 
 function getCommonConfig(_config) {

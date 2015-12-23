@@ -47,46 +47,32 @@ function unbundle(_config) {
 
 function removeBundles(cfg) {
   var appCfg = (0, _configSerializer.getAppConfig)(cfg.configPath);
-
   delete appCfg.bundles;
-
   (0, _configSerializer.saveAppConfig)(cfg.configPath, appCfg);
 
   return _bluebird2['default'].resolve();
 }
 
 function removeHtmlImportBundles(config) {
-
-  var baseURL = _systemjsBuilderLibUtils2['default'].fromFileURL(config.baseURL);
   var tasks = [];
 
   _Object$keys(config.bundles).forEach(function (key) {
-
     var cfg = config.bundles[key];
     if (cfg.htmlimport) {
-      tasks.push(_removeHtmlImportBundle(cfg, baseURL, key));
+      tasks.push(_removeHtmlImportBundle((0, _utils.getHtmlImportBundleConfig)(cfg, key, config)));
     }
   });
 
   return _bluebird2['default'].all(tasks);
 }
 
-function _removeHtmlImportBundle(_cfg, _baseURL, bundleName) {
+function _removeHtmlImportBundle(cfg) {
 
-  if (!_cfg) _bluebird2['default'].resolve();
-  if (!_cfg.options) _cfg.options = {};
+  var file = _path2['default'].resolve(cfg.baseURL, cfg.options.inject.destFile);
 
-  var inject = _cfg.options.inject;
-
-  if (!inject) _bluebird2['default'].resolve();
-  if (!_lodash2['default'].isObject(inject)) inject = {};
-
-  var _inject = _lodash2['default'].defaults(inject, {
-    indexFile: 'index.html',
-    destFile: 'index.html'
-  });
-
-  var file = _path2['default'].resolve(_baseURL, _inject.destFile);
+  if (!_fs2['default'].existsSync(file)) {
+    return _bluebird2['default'].resolve();
+  }
 
   return _bluebird2['default'].promisify(_fs2['default'].readFile)(file, {
     encoding: 'utf8'

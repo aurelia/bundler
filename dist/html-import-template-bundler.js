@@ -31,37 +31,34 @@ var _systemjsBuilderLibUtils = require('systemjs-builder/lib/utils');
 
 var _systemjsBuilderLibUtils2 = _interopRequireDefault(_systemjsBuilderLibUtils);
 
+var _systemjsBuilder = require('systemjs-builder');
+
+var _systemjsBuilder2 = _interopRequireDefault(_systemjsBuilder);
+
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-function bundle(pattern, fileName, _opts) {
+function bundle(cfg) {
+
+  var builder = new _systemjsBuilder2['default'](cfg.baseURL, cfg.configPath);
+  builder.config(cfg.builderCfg);
+
   var templates = [];
-
-  var options = _lodash2['default'].defaultsDeep(_opts, {
-    packagePath: '.'
-  });
-
-  jspm.setPackagePath(options.packagePath);
-
-  var builderCfg = options.builderCfg || {};
-  var builder = new jspm.Builder(builderCfg);
-  var baseURL = builder.loader.baseURL;
-  var cwd = _systemjsBuilderLibUtils2['default'].fromFileURL(baseURL);;
-
-  var outfile = _path2['default'].resolve(_systemjsBuilderLibUtils2['default'].fromFileURL(baseURL), fileName);
+  var baseURL = _path2['default'].resolve(cfg.baseURL);
+  var outfile = _path2['default'].resolve(baseURL, cfg.bundleName) + '.html';
 
   if (_fs2['default'].existsSync(outfile)) {
-    if (!options.force) {
+    if (!cfg.force) {
       throw new Error('A bundle named \'' + outfile + '\' is already exists. Use --force to overwrite.');
     }
     _fs2['default'].unlinkSync(outfile);
   }
 
-  _globby2['default'].sync(pattern, {
-    cwd: cwd.replace(/\\/g, '/')
+  _globby2['default'].sync(cfg.includes, {
+    cwd: baseURL.replace(/\\/g, '/')
   }).forEach(function (file) {
-    file = _path2['default'].resolve(cwd, file);
+    file = _path2['default'].resolve(baseURL, file);
     var content = _fs2['default'].readFileSync(file, {
       encoding: 'utf8'
     });
@@ -76,29 +73,25 @@ function bundle(pattern, fileName, _opts) {
 
   _fs2['default'].writeFileSync(outfile, templates.join('\n'));
 
-  if (options.inject) {
-    injectLink(outfile, _systemjsBuilderLibUtils2['default'].fromFileURL(baseURL), options.inject);
+  if (cfg.options.inject) {
+    injectLink(outfile, baseURL, cfg.options.inject);
   }
 
   return _bluebird2['default'].resolve();
 }
 
-function injectLink(outfile, baseURL, injectOptions) {
-  var link = '';
-  var fileName = injectOptions.indexFile;
-  var bundle = _path2['default'].resolve(baseURL, _path2['default'].relative(baseURL, outfile));
-  var index = _path2['default'].resolve(baseURL, fileName || 'index.html');
-  var destFile = injectOptions.destFile ? _path2['default'].resolve(baseURL, injectOptions.destFile) : index;
+function injectLink(outfile, baseURL, inject) {
+  var bundleFile = _path2['default'].resolve(baseURL, _path2['default'].relative(baseURL, outfile));
+  var indexFile = _path2['default'].resolve(baseURL, inject.indexFile);
+  var destFile = _path2['default'].resolve(baseURL, inject.destFile);
+  var relpath = _path2['default'].relative(_path2['default'].dirname(indexFile), _path2['default'].dirname(bundleFile)).replace(/\\/g, '/');
 
-  var relpath = _path2['default'].relative(_path2['default'].dirname(index), _path2['default'].dirname(bundle)).replace(/\\/g, '/');
+  var link = createLink(bundleFile, relpath);
+  addLink(link, indexFile, destFile);
+}
 
-  if (!relpath.startsWith('.')) {
-    link = relpath ? './' + relpath + '/' + _path2['default'].basename(bundle) : './' + _path2['default'].basename(bundle);
-  } else {
-    link = relpath + '/' + _path2['default'].basename(bundle);
-  }
-
-  var content = _fs2['default'].readFileSync(index, {
+function addLink(link, indexFile, destFile) {
+  var content = _fs2['default'].readFileSync(indexFile, {
     encoding: 'utf8'
   });
 
@@ -109,6 +102,14 @@ function injectLink(outfile, baseURL, injectOptions) {
   }
 
   _fs2['default'].writeFileSync(destFile, $.html());
+}
+
+function createLink(bundleFile, relpath) {
+  if (!relpath.startsWith('.')) {
+    return relpath ? './' + relpath + '/' + _path2['default'].basename(bundleFile) : './' + _path2['default'].basename(bundleFile);
+  } else {
+    return relpath + '/' + _path2['default'].basename(bundleFile);
+  }
 }
 
 function getCanonicalName(builder, file, pluginName) {

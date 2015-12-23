@@ -62,14 +62,6 @@ function _bundle(_bundleCfg, bundleName, config) {
   return bundler.bundle((0, _utils.getBundleConfig)(_bundleCfg, bundleName, config));
 }
 
-function _bundleHtmlImportTemplate(cfg, name, config) {
-
-  var outfile = name + '.html';
-  var includes = cfg.includes;
-  var opt = cfg.options;
-
-  opt.force = config.force;
-  opt.packagePath = config.packagePath;
-
-  return hitb.bundle(includes, outfile, opt);
+function _bundleHtmlImportTemplate(_bundleCfg, bundleName, config) {
+  return hitb.bundle((0, _utils.getHtmlImportBundleConfig)(_bundleCfg, bundleName, config));
 }
