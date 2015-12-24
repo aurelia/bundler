@@ -78,8 +78,8 @@ var bundles = {
 
 var config = {
   force: true,                    // Force overwrite bundle file if already exists. Default false
-  configPath: '../config.js',     // `config.js` path
   baseURL: '.',                   // `baseURL of the application` 
+  configPath: './config.js',      // `config.js` path. Must be within `baseURL` 
   bundles: bundles
 };
 
