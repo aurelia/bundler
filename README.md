@@ -21,9 +21,9 @@ var bundles = {
       "*.html!text",
       "*.css!text"
     ],
-    "excludes: [
+    "excludes": [
       "dist/donot-bundle"               // Module names to be exluded
-    ]
+    ],
     "options": {
       "inject": true,                   // Default is true
       "minify": true,                   // Default is false
@@ -46,7 +46,7 @@ var bundles = {
     "htmlimport": true,                 // Set it to `true` for html import based view bundle.
     "includes": "dist/*.html",
     "options": {
-      "inject": {
+      "inject": {                      // Default is false.
         "indexFile": "index.html",
         "destFile": "dest_index.html"
       }
