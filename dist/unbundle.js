@@ -39,6 +39,7 @@ var _utils = require('./utils');
 
 function unbundle(_config) {
   var config = (0, _utils.getCommonConfig)(_config);
+  (0, _utils.validateConfig)(config);
 
   var tasks = [removeBundles(config), removeHtmlImportBundles(config)];
 

@@ -41,8 +41,10 @@ function bundle(_config) {
 
   var tasks = [];
   var config = (0, _utils.getCommonConfig)(_config);
-  var bundles = config.bundles;
 
+  (0, _utils.validateConfig)(config);
+
+  var bundles = config.bundles;
   _Object$keys(bundles).forEach(function (key) {
 
     var cfg = bundles[key];

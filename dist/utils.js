@@ -6,6 +6,7 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 exports.getOutFileName = getOutFileName;
+exports.validateConfig = validateConfig;
 exports.getBundleConfig = getBundleConfig;
 exports.getHtmlImportBundleConfig = getHtmlImportBundleConfig;
 exports.getCommonConfig = getCommonConfig;
@@ -22,8 +23,26 @@ var _revHash = require('rev-hash');
 
 var _revHash2 = _interopRequireDefault(_revHash);
 
+var _fs = require('fs');
+
+var _fs2 = _interopRequireDefault(_fs);
+
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
 function getOutFileName(source, fileName, rev) {
   return rev ? (0, _revPath2['default'])(fileName, (0, _revHash2['default'])(new Buffer(source, 'utf-8'))) : fileName;
+}
+
+function validateConfig(config) {
+  if (!_fs2['default'].existsSync(config.baseURL)) {
+    throw new Error('Path \'' + _path2['default'].resolve(config.baseURL) + '\' not exits. Please provide a valid \'baseURL\'.');
+  }
+
+  if (!_fs2['default'].existsSync(config.configPath)) {
+    throw new Error('File \'' + _path2['default'].resolve(config.configPath) + '\' not found! Please provide a valid \'config\' file.');
+  }
 }
 
 function getBundleConfig(_bundleCfg, bundleName, config) {
@@ -76,7 +95,7 @@ function getCommonConfig(_config) {
   return _lodash2['default'].defaults(_config, {
     force: false,
     baseURL: '.',
-    configPath: '.',
+    configPath: './config.js',
     builderCfg: {},
     bundles: {}
   });
