@@ -6,3 +6,89 @@
 This library is part of the [Aurelia](http://www.aurelia.io/) platform and contains a library for bundling HTML, JavaScript and CSS for use with SystemJS.
 
 > To keep up to date on [Aurelia](http://www.aurelia.io/), please visit and subscribe to [the official blog](http://blog.durandal.io/). If you have questions, we invite you to [join us on Gitter](https://gitter.im/aurelia/discuss). If you would like to have deeper insight into our development process, please install the [ZenHub](https://zenhub.io) Chrome Extension and visit any of our repository's boards. You can get an overview of all Aurelia work by visiting [the framework board](https://github.com/aurelia/framework#boards).
+
+## Example Gulp Task  
+
+```javascript
+
+var gulp = require('gulp');
+var bundler = require('aurelia-bundler');
+
+var bundles = {
+  "dist/app-build": {
+    "includes": [
+      "[*]",                            // Module names to be included in the bundle. May be a pattern too. eg. `*`, `**/**/*`, `[*]`
+      "*.html!text",
+      "*.css!text"
+    ],
+    "excludes: [
+      "dist/donot-bundle"               // Module names to be exluded
+    ]
+    "options": {
+      "inject": true,                   // Default is true
+      "minify": true,                   // Default is false
+      "rev": true                       // Set it to true for revison suport. Default is false
+    }
+  },
+  "dist/app-build": {
+    "skip": true,                       // We can skip bundle. 
+    "includes": [
+      "[*]"
+    ],
+    "options": {
+      "inject": true,
+      "minify": true,
+      "rev": true
+    }
+  },
+  "view-bundle": {
+    "skip" : true
+    "htmlimport": true,                 // Set it to `true` for html import based view bundle.
+    "includes": "dist/*.html",
+    "options": {
+      "inject": {
+        "indexFile": "index.html",
+        "destFile": "dest_index.html"
+      }
+    }
+  },
+  "dist/aurelia": {
+    "includes": [
+      "aurelia-framework",
+      "aurelia-bootstrapper",
+      "aurelia-fetch-client",
+      "aurelia-router",
+      "aurelia-animator-css",
+      "aurelia-templating-binding",
+      "aurelia-templating-resources",
+      "aurelia-templating-router",
+      "aurelia-loader-default",
+      "aurelia-history-browser",
+      "aurelia-logging-console",
+      "bootstrap",
+      "bootstrap/css/bootstrap.css!text"
+    ],
+    "options": {
+      "inject": true,
+      "minify": true,
+      "rev": true
+    }
+  }
+};
+
+var config = {
+  force: true,                    // Force overwrite bundle file if already exists. Default false
+  configPath: '../config.js',     // `config.js` path
+  baseURL: '.',                   // `baseURL of the application` 
+  bundles: bundles
+};
+
+gulp.task('unbundle', function() {
+  return bundler.unbundle(config);
+});
+
+gulp.task('bundle', ['unbundle'],  function() {
+  return bundler.bundle(config);
+});
+
+```
