@@ -22,7 +22,7 @@ var bundles = {
       "*.css!text"
     ],
     "excludes": [
-      "dist/donot-bundle"               // Module names to be exluded
+      "dist/donot-bundle"               // Module names to be excluded
     ],
     "options": {
       "inject": true,                   // Default is true
