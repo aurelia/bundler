@@ -37,11 +37,11 @@ function getOutFileName(source, fileName, rev) {
 
 function validateConfig(config) {
   if (!_fs2['default'].existsSync(config.baseURL)) {
-    throw new Error('Path \'' + _path2['default'].resolve(config.baseURL) + '\' not exits. Please provide a valid \'baseURL\'.');
+    throw new Error('Path \'' + _path2['default'].resolve(config.baseURL) + '\' does not exist. Please provide a valid \'baseURL\' in your bundle configuration.');
   }
 
   if (!_fs2['default'].existsSync(config.configPath)) {
-    throw new Error('File \'' + _path2['default'].resolve(config.configPath) + '\' not found! Please provide a valid \'config\' file.');
+    throw new Error('File \'' + _path2['default'].resolve(config.configPath) + '\' was not found! Please provide a valid \'config.js\' file for use during bundling.');
   }
 }
 

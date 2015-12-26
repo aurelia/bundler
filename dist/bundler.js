@@ -79,7 +79,7 @@ function writeOutput(output, outfile, baseURL, force) {
   var outPath = _path2['default'].resolve((0, _systemjsBuilderLibUtils.fromFileURL)(baseURL), outfile);
   if (_fs2['default'].existsSync(outPath)) {
     if (!force) {
-      throw new Error('A bundle named \'' + outPath + '\' is already exists. Use --force to overwrite.');
+      throw new Error('A bundle named \'' + outPath + '\' already exists. Use the --force option to overwrite it.');
     }
 
     _fs2['default'].unlinkSync(outPath);
@@ -127,5 +127,5 @@ function getFullModuleName(moduleName, map) {
     return moduleName;
   }
 
-  throw new Error('Version conflict found in module names specified in configuration for \'' + moduleName + '\'. Try including  full module name with a specific version number or resolve the conflict manually with jspm');
+  throw new Error('A version conflict was found among the module names specified in the configuration for \'' + moduleName + '\'. Try including a full module name with a specific version number or resolve the conflict manually with jspm.');
 }

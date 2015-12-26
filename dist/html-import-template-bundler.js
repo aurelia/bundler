@@ -50,7 +50,7 @@ function bundle(cfg) {
 
   if (_fs2['default'].existsSync(outfile)) {
     if (!cfg.force) {
-      throw new Error('A bundle named \'' + outfile + '\' is already exists. Use --force to overwrite.');
+      throw new Error('A bundle named \'' + outfile + '\' already exists. Use the --force option to overwrite it.');
     }
     _fs2['default'].unlinkSync(outfile);
   }
