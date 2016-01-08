@@ -79,7 +79,14 @@ function bundle(cfg) {
     moduleExpression = moduleExpression + ' - ' + excludeExpression;
   }
 
-  return builder.bundle(moduleExpression, cfg.options).then(function (output) {
+  return builder.trace(moduleExpression, cfg.options).then(function (tree) {
+
+    if (cfg.options.depCache) {
+      injectDepCache(builder.getDepCache(tree), cfg);
+    }
+
+    return builder.bundle(tree, cfg.options);
+  }).then(function (output) {
 
     var outfile = (0, _utils.getOutFileName)(output.source, cfg.bundleName + '.js', cfg.options.rev);
     writeOutput(output, outfile, cfg.baseURL, cfg.force);
@@ -103,6 +110,17 @@ function writeOutput(output, outfile, baseURL, force) {
   }
 
   _fs2['default'].writeFileSync(outPath, output.source);
+}
+
+function injectDepCache(_depCache, cfg) {
+
+  var appCfg = (0, _configSerializer.getAppConfig)(cfg.configPath);
+  var depCache = appCfg.depCache || {};
+
+  _lodash2['default'].extend(depCache, _depCache);
+  appCfg.depCache = depCache;
+
+  (0, _configSerializer.saveAppConfig)(cfg.configPath, appCfg);
 }
 
 function injectBundle(builder, output, outfile, cfg) {

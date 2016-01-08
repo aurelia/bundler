@@ -49,6 +49,7 @@ function unbundle(_config) {
 function removeBundles(cfg) {
   var appCfg = (0, _configSerializer.getAppConfig)(cfg.configPath);
   delete appCfg.bundles;
+  delete appCfg.depCache;
   (0, _configSerializer.saveAppConfig)(cfg.configPath, appCfg);
 
   return _bluebird2['default'].resolve();
