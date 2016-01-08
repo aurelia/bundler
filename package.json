@@ -30,10 +30,11 @@
     "bluebird": "^2.9.25",
     "glob": "^5.0.9",
     "globby": "^2.0.0",
+    "html-minifier": "^1.1.1",
     "lodash": "^3.10.1",
     "rev-hash": "^1.0.0",
     "rev-path": "^1.0.0",
-    "systemjs-builder": "0.14.6",
+    "systemjs-builder": "^0.14.15",
     "whacko": "^0.19.1"
   },
   "devDependencies": {

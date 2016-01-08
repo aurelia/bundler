@@ -36,6 +36,10 @@ var _configSerializer = require('./config-serializer');
 
 var _utils = require('./utils');
 
+var _htmlMinifier = require('html-minifier');
+
+var _htmlMinifier2 = _interopRequireDefault(_htmlMinifier);
+
 function bundle(cfg) {
 
   var appCfg = (0, _configSerializer.getAppConfig)(cfg.configPath);
@@ -56,13 +60,26 @@ function bundle(cfg) {
 
   var moduleExpression = includeExpression;
 
+  var minifyOpts = {
+    collapseWhitespace: true
+  };
+
+  cfg.options.fetch = function (load, fetch) {
+    var address = (0, _systemjsBuilderLibUtils.fromFileURL)(load.address);
+    var ext = _path2['default'].extname(address);
+
+    if (ext === '.html' || ext === '.css') {
+      var content = _fs2['default'].readFileSync(address, 'utf8');
+      return _htmlMinifier2['default'].minify(content, minifyOpts);
+    }
+    return fetch(load);
+  };
+
   if (excludeExpression && excludeExpression.length > 0) {
     moduleExpression = moduleExpression + ' - ' + excludeExpression;
   }
 
-  return builder.trace(moduleExpression).then(function (tree) {
-    return builder.bundle(tree, cfg.options);
-  }).then(function (output) {
+  return builder.bundle(moduleExpression, cfg.options).then(function (output) {
 
     var outfile = (0, _utils.getOutFileName)(output.source, cfg.bundleName + '.js', cfg.options.rev);
     writeOutput(output, outfile, cfg.baseURL, cfg.force);

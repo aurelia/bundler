@@ -1,6 +1,7 @@
 node_modules
 jspm_packages
 bower_components
+.vscode
 .idea
 .DS_STORE
 build/reports
