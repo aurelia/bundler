@@ -27,7 +27,9 @@ function readConfig(cfgCode) {
 }
 
 function serializeConfig(config) {
-  var json = JSON.stringify(config, null, 2);
+  var tab = '  ';
+  var json = JSON.stringify(config, null, 2).replace(new RegExp('^' + tab + '"(\\w+)"', 'mg'), tab + '$1');
+
   return 'System.config(' + json + ')';
 }
 

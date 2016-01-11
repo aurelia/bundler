@@ -44,7 +44,7 @@ describe('getFullModuleName', () => {
   it('throws error when multiple match found', () => {
     let moduleName = 'util';
     let fn = getFullModuleName.bind(undefined, moduleName, config.map);
-    expect(fn).to.throw(/Version conflict found in module names /);
+    expect(fn).to.throw(/A version conflict was found among the module names specified/);
   });
 
 });
