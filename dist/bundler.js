@@ -4,6 +4,8 @@ var _Object$keys = require('babel-runtime/core-js/object/keys')['default'];
 
 var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
 
+var _interopRequireWildcard = require('babel-runtime/helpers/interop-require-wildcard')['default'];
+
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -36,20 +38,22 @@ var _configSerializer = require('./config-serializer');
 
 var _utils = require('./utils');
 
+var utils = _interopRequireWildcard(_utils);
+
 var _htmlMinifier = require('html-minifier');
 
 var _htmlMinifier2 = _interopRequireDefault(_htmlMinifier);
 
+var _cleanCss = require('clean-css');
+
+var _cleanCss2 = _interopRequireDefault(_cleanCss);
+
 function bundle(cfg) {
 
   var appCfg = (0, _configSerializer.getAppConfig)(cfg.configPath);
-
   var builder = new _systemjsBuilder2['default'](cfg.baseURL, cfg.configPath);
-  builder.config(cfg.builderCfg);
 
-  if (!appCfg.map) {
-    appCfg.map = {};
-  }
+  builder.config(cfg.builderCfg);
 
   var includeExpression = cfg.includes.map(function (m) {
     return getFullModuleName(m, appCfg.map);
@@ -57,47 +61,57 @@ function bundle(cfg) {
   var excludeExpression = cfg.excludes.map(function (m) {
     return getFullModuleName(m, appCfg.map);
   }).join(' - ');
-
   var moduleExpression = includeExpression;
-
-  var minifyOpts = {
-    collapseWhitespace: true
-  };
-
-  cfg.options.fetch = function (load, fetch) {
-    var address = (0, _systemjsBuilderLibUtils.fromFileURL)(load.address);
-    var ext = _path2['default'].extname(address);
-
-    if (ext === '.html' || ext === '.css') {
-      var content = _fs2['default'].readFileSync(address, 'utf8');
-      return _htmlMinifier2['default'].minify(content, minifyOpts);
-    }
-    return fetch(load);
-  };
 
   if (excludeExpression && excludeExpression.length > 0) {
     moduleExpression = moduleExpression + ' - ' + excludeExpression;
   }
 
-  return builder.trace(moduleExpression, cfg.options).then(function (tree) {
+  cfg.options.fetch = function (load, fetch) {
+    var address = (0, _systemjsBuilderLibUtils.fromFileURL)(load.address);
+    var ext = _path2['default'].extname(address);
 
-    if (cfg.options.depCache) {
-      injectDepCache(builder.getDepCache(tree), cfg);
+    if (ext === '.html' && cfg.options.minify) {
+      var content = _fs2['default'].readFileSync(address, 'utf8');
+      var opts = utils.getHTMLMinOpts(cfg.options.htmlminopts);
+
+      return _htmlMinifier2['default'].minify(content, opts);
     }
 
-    return builder.bundle(tree, cfg.options);
-  }).then(function (output) {
+    if (ext === '.css' && cfg.options.minify) {
+      var content = _fs2['default'].readFileSync(address, 'utf8');
+      var opts = utils.getCSSMinOpts(cfg.options.cssminopts);
 
-    var outfile = (0, _utils.getOutFileName)(output.source, cfg.bundleName + '.js', cfg.options.rev);
+      return new _cleanCss2['default'](opts).minify(content).styles;
+    }
+
+    return fetch(load);
+  };
+
+  var tasks = [_bundle(builder, moduleExpression, cfg)];
+
+  if (cfg.options.depCache) {
+    tasks.push(injectDepCache(builder, moduleExpression, cfg));
+  }
+
+  return _bluebird2['default'].all(tasks);
+}
+
+;
+
+function _bundle(builder, moduleExpression, cfg) {
+  return builder.bundle(moduleExpression, cfg.options).then(function (output) {
+
+    var outfile = utils.getOutFileName(output.source, cfg.bundleName + '.js', cfg.options.rev);
     writeOutput(output, outfile, cfg.baseURL, cfg.force);
 
     if (cfg.options.inject) {
       injectBundle(builder, output, outfile, cfg);
     }
+
+    return _bluebird2['default'].resolve();
   });
 }
-
-;
 
 function writeOutput(output, outfile, baseURL, force) {
   var outPath = _path2['default'].resolve((0, _systemjsBuilderLibUtils.fromFileURL)(baseURL), outfile);
@@ -112,15 +126,20 @@ function writeOutput(output, outfile, baseURL, force) {
   _fs2['default'].writeFileSync(outPath, output.source);
 }
 
-function injectDepCache(_depCache, cfg) {
+function injectDepCache(builder, moduleExpression, cfg) {
+  return builder.trace(moduleExpression, cfg.options).then(function (tree) {
+    var _depCache = builder.getDepCache(tree);
 
-  var appCfg = (0, _configSerializer.getAppConfig)(cfg.configPath);
-  var depCache = appCfg.depCache || {};
+    var appCfg = (0, _configSerializer.getAppConfig)(cfg.configPath);
+    var depCache = appCfg.depCache || {};
 
-  _lodash2['default'].extend(depCache, _depCache);
-  appCfg.depCache = depCache;
+    _lodash2['default'].assign(depCache, _depCache);
+    appCfg.depCache = depCache;
 
-  (0, _configSerializer.saveAppConfig)(cfg.configPath, appCfg);
+    (0, _configSerializer.saveAppConfig)(cfg.configPath, appCfg);
+
+    return _bluebird2['default'].resolve();
+  });
 }
 
 function injectBundle(builder, output, outfile, cfg) {

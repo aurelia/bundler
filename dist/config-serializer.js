@@ -34,7 +34,12 @@ function serializeConfig(config) {
 }
 
 function getAppConfig(configPath) {
-  return readConfig(fs.readFileSync(configPath, 'utf8'));
+  var appCfg = readConfig(fs.readFileSync(configPath, 'utf8'));
+
+  if (!appCfg.map) {
+    appCfg.map = {};
+  }
+  return appCfg;
 }
 
 function saveAppConfig(configPath, config) {

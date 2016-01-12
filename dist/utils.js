@@ -7,6 +7,8 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports.getOutFileName = getOutFileName;
 exports.validateConfig = validateConfig;
+exports.getHTMLMinOpts = getHTMLMinOpts;
+exports.getCSSMinOpts = getCSSMinOpts;
 exports.getBundleConfig = getBundleConfig;
 exports.getHtmlImportBundleConfig = getHtmlImportBundleConfig;
 exports.getCommonConfig = getCommonConfig;
@@ -45,6 +47,35 @@ function validateConfig(config) {
   }
 }
 
+function getHTMLMinOpts(opts) {
+  return _lodash2['default'].defaultsDeep(opts, {
+    removeComments: true,
+    removeCommentsFromCDATA: true,
+    removeCDATASectionsFromCDATA: true,
+    collapseWhitespace: true,
+    conservativeCollapse: true,
+    collapseBooleanAttributes: true,
+    removeRedundantAttributes: true,
+    useShortDoctype: true,
+    removeEmptyAttributes: true,
+    removeScriptTypeAttributes: true,
+    removeStyleLinkTypeAttributes: true,
+    caseSensitive: true,
+    minifyJS: true,
+    minifyCSS: true
+  });
+}
+
+function getCSSMinOpts(opts) {
+  return _lodash2['default'].defaultsDeep(opts, {
+    advanced: true,
+    agressiveMerging: true,
+    mediaMerging: true,
+    restructuring: true,
+    shorthandCompacting: true
+  });
+}
+
 function getBundleConfig(_bundleCfg, bundleName, config) {
   return _lodash2['default'].defaultsDeep(_bundleCfg, {
     includes: [],
@@ -52,7 +83,9 @@ function getBundleConfig(_bundleCfg, bundleName, config) {
     options: {
       rev: false,
       minify: false,
-      inject: true
+      inject: true,
+      htmlminopts: {},
+      cssminopts: {}
     },
     bundleName: bundleName,
     force: config.force,

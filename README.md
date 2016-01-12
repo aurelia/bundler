@@ -27,6 +27,12 @@ var bundles = {
     "options": {
       "inject": true,                   // Default is true
       "minify": true,                   // Default is false
+      "htmlminopts": {
+                                        // Supports all options here https://github.com/kangax/html-minifier#options-quick-reference 
+      },
+      "cssminopts" : {
+                                        // Supports all options here https://github.com/jakubpawlowicz/clean-css#how-to-use-clean-css-api 
+      }
       "rev": true                       // Set it to true for revison suport. Default is false
     }
   },
