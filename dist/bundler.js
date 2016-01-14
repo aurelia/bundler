@@ -10,6 +10,7 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 exports.bundle = bundle;
+exports.depCache = depCache;
 exports.getFullModuleName = getFullModuleName;
 
 var _fs = require('fs');
@@ -48,26 +49,25 @@ var _cleanCss = require('clean-css');
 
 var _cleanCss2 = _interopRequireDefault(_cleanCss);
 
-function bundle(cfg) {
-
+function createBuildExpression(cfg) {
   var appCfg = (0, _configSerializer.getAppConfig)(cfg.configPath);
-  var builder = new _systemjsBuilder2['default'](cfg.baseURL, cfg.configPath);
-
-  builder.config(cfg.builderCfg);
-
   var includeExpression = cfg.includes.map(function (m) {
     return getFullModuleName(m, appCfg.map);
   }).join(' + ');
   var excludeExpression = cfg.excludes.map(function (m) {
     return getFullModuleName(m, appCfg.map);
   }).join(' - ');
-  var moduleExpression = includeExpression;
+  var buildExpression = includeExpression;
 
   if (excludeExpression && excludeExpression.length > 0) {
-    moduleExpression = moduleExpression + ' - ' + excludeExpression;
+    buildExpression = buildExpression + ' - ' + excludeExpression;
   }
 
-  cfg.options.fetch = function (load, fetch) {
+  return buildExpression;
+}
+
+function createFetchHook(cfg) {
+  return function (load, fetch) {
     var address = (0, _systemjsBuilderLibUtils.fromFileURL)(load.address);
     var ext = _path2['default'].extname(address);
 
@@ -87,11 +87,17 @@ function bundle(cfg) {
 
     return fetch(load);
   };
+}
 
-  var tasks = [_bundle(builder, moduleExpression, cfg)];
+function bundle(cfg) {
+
+  var buildExpression = createBuildExpression(cfg);
+  cfg.options.fetch = createFetchHook(cfg);
+
+  var tasks = [_bundle(buildExpression, cfg)];
 
   if (cfg.options.depCache) {
-    tasks.push(injectDepCache(builder, moduleExpression, cfg));
+    tasks.push(_depCache(buildExpression, cfg));
   }
 
   return _bluebird2['default'].all(tasks);
@@ -99,8 +105,37 @@ function bundle(cfg) {
 
 ;
 
-function _bundle(builder, moduleExpression, cfg) {
-  return builder.bundle(moduleExpression, cfg.options).then(function (output) {
+function depCache(cfg) {
+  var buildExpression = createBuildExpression(cfg);
+  return _depCache(buildExpression, cfg);
+}
+
+function _depCache(buildExpression, cfg) {
+
+  var builder = new _systemjsBuilder2['default'](cfg.baseURL, cfg.configPath);
+  builder.config(cfg.builderCfg);
+
+  return builder.trace(buildExpression, cfg.options).then(function (tree) {
+    var _depCache = builder.getDepCache(tree);
+
+    var appCfg = (0, _configSerializer.getAppConfig)(cfg.configPath);
+    var depCache = appCfg.depCache || {};
+
+    _lodash2['default'].assign(depCache, _depCache);
+    appCfg.depCache = depCache;
+
+    (0, _configSerializer.saveAppConfig)(cfg.configPath, appCfg);
+
+    return _bluebird2['default'].resolve();
+  });
+}
+
+function _bundle(buildExpression, cfg) {
+
+  var builder = new _systemjsBuilder2['default'](cfg.baseURL, cfg.configPath);
+  builder.config(cfg.builderCfg);
+
+  return builder.bundle(buildExpression, cfg.options).then(function (output) {
 
     var outfile = utils.getOutFileName(output.source, cfg.bundleName + '.js', cfg.options.rev);
     writeOutput(output, outfile, cfg.baseURL, cfg.force);
@@ -124,22 +159,6 @@ function writeOutput(output, outfile, baseURL, force) {
   }
 
   _fs2['default'].writeFileSync(outPath, output.source);
-}
-
-function injectDepCache(builder, moduleExpression, cfg) {
-  return builder.trace(moduleExpression, cfg.options).then(function (tree) {
-    var _depCache = builder.getDepCache(tree);
-
-    var appCfg = (0, _configSerializer.getAppConfig)(cfg.configPath);
-    var depCache = appCfg.depCache || {};
-
-    _lodash2['default'].assign(depCache, _depCache);
-    appCfg.depCache = depCache;
-
-    (0, _configSerializer.saveAppConfig)(cfg.configPath, appCfg);
-
-    return _bluebird2['default'].resolve();
-  });
 }
 
 function injectBundle(builder, output, outfile, cfg) {
