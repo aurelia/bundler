@@ -149,7 +149,8 @@ function _bundle(buildExpression, cfg) {
 }
 
 function writeOutput(output, outfile, baseURL, force) {
-  var outPath = _path2['default'].resolve((0, _systemjsBuilderLibUtils.fromFileURL)(baseURL), outfile);
+  var outPath = _path2['default'].resolve(baseURL, outfile);
+
   if (_fs2['default'].existsSync(outPath)) {
     if (!force) {
       throw new Error('A bundle named \'' + outPath + '\' already exists. Use the --force option to overwrite it.');
