@@ -15,9 +15,9 @@ var gulp = require('gulp');
 var bundler = require('aurelia-bundler');
 
 var bundles = {
-  "dist/app-build": {
+  "dist/app-build": {                   // Should be within `baseURL`
     "includes": [
-      "[*]",                            // Module names to be included in the bundle. May be a pattern too. eg. `*`, `**/**/*`, `[*]`
+      "[*.js]",                         // Module names to be included in the bundle. May be a pattern too. eg. `*`, `**/**/*`, `[*]`
       "*.html!text",
       "*.css!text"
     ],
@@ -93,8 +93,10 @@ gulp.task('unbundle', function() {
   return bundler.unbundle(config);
 });
 
-gulp.task('bundle', ['unbundle'],  function() {
+gulp.task('bundle', ['unbundle'],  function() {   // Running `unbundle` before bundling is a good practice.
   return bundler.bundle(config);
 });
 
 ```
+
+> Output file will be `baseURL/bundle/name.js`. 
