@@ -1,6 +1,6 @@
 {
   "name": "aurelia-bundler",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A library for bundling JavaScript, HTML and CSS for use with SystemJS.",
   "keywords": [
     "aurelia",
