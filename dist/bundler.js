@@ -68,8 +68,19 @@ function createBuildExpression(cfg) {
 
 function createFetchHook(cfg) {
   return function (load, fetch) {
+
     var address = (0, _systemjsBuilderLibUtils.fromFileURL)(load.address);
     var ext = _path2['default'].extname(address);
+
+    if (ext === '.js') {
+      return fetch(load);
+    }
+
+    var plugin = _path2['default'].basename((0, _systemjsBuilderLibUtils.fromFileURL)(load.name.split('!')[1]));
+
+    if (!plugin.startsWith('plugin-text')) {
+      return fetch(load);
+    }
 
     if (ext === '.html' && cfg.options.minify) {
       var content = _fs2['default'].readFileSync(address, 'utf8');
@@ -82,7 +93,13 @@ function createFetchHook(cfg) {
       var content = _fs2['default'].readFileSync(address, 'utf8');
       var opts = utils.getCSSMinOpts(cfg.options.cssminopts);
 
-      return new _cleanCss2['default'](opts).minify(content).styles;
+      var output = new _cleanCss2['default'](opts).minify(content);
+
+      if (output.errors.length) {
+        throw new Error('CSS Plugin:\n' + output.errors.join('\n'));
+      }
+
+      return output.styles;
     }
 
     return fetch(load);
