@@ -14,6 +14,7 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 exports.bundle = bundle;
+exports.depCache = depCache;
 
 var _bluebird = require('bluebird');
 
@@ -55,6 +56,27 @@ function bundle(_config) {
     } else {
       tasks.push(_bundle(cfg, key, config));
     }
+  });
+
+  return _bluebird2['default'].all(tasks);
+}
+
+function depCache(_config) {
+
+  var tasks = [];
+  var config = (0, _utils.getCommonConfig)(_config);
+
+  (0, _utils.validateConfig)(config);
+
+  var bundles = config.bundles;
+  _Object$keys(bundles).forEach(function (key) {
+
+    var cfg = bundles[key];
+
+    if (cfg.skip) return;
+    if (cfg.htmlimport) return;
+
+    tasks.push(bundler.depCache((0, _utils.getBundleConfig)(cfg, key, config)));
   });
 
   return _bluebird2['default'].all(tasks);
