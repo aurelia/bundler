@@ -174,6 +174,12 @@ function writeOutput(output, outfile, baseURL, force) {
     }
 
     _fs2['default'].unlinkSync(outPath);
+  } else {
+    var dirpath = _path2['default'].dirname(outPath);
+
+    if (!_fs2['default'].existsSync(dirpath)) {
+      _fs2['default'].mkdirSync(dirpath);
+    }
   }
 
   _fs2['default'].writeFileSync(outPath, output.source);
