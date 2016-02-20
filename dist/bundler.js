@@ -76,6 +76,10 @@ function createFetchHook(cfg) {
       return fetch(load);
     }
 
+    if (ext === '.ts') {
+      return fetch(load);
+    }
+
     var plugin = _path2['default'].basename((0, _systemjsBuilderLibUtils.fromFileURL)(load.name.split('!')[1]));
 
     if (!plugin.startsWith('plugin-text')) {
