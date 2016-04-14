@@ -55,7 +55,6 @@ function getHTMLMinOpts(opts) {
     collapseWhitespace: true,
     conservativeCollapse: true,
     collapseBooleanAttributes: true,
-    removeRedundantAttributes: true,
     useShortDoctype: true,
     removeEmptyAttributes: true,
     removeScriptTypeAttributes: true,
