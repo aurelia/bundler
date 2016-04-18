@@ -3,7 +3,6 @@ import { getFullModuleName } from '../lib/bundler';
 import { config } from './config.js';
 
 describe('getFullModuleName', () => {
-
   it('is defined', () => {
     expect(getFullModuleName).to.not.be.undefined;
   });
@@ -13,30 +12,28 @@ describe('getFullModuleName', () => {
   });
 
   it('returns the match immediately when exact match is found', () => {
-    let moduleName = `github:aurelia/framework@0.17.0`; 
+    let moduleName = 'github:aurelia/framework@0.17.0';
     let match = getFullModuleName(moduleName, config.map);
     expect(match).to.equal(moduleName);
 
-    moduleName = `font-awesome`; 
+    moduleName = 'font-awesome';
     match = getFullModuleName(moduleName, config.map);
     expect(match).to.equal(moduleName);
   });
 
 
   it('returns full module name with version when module name is specified without registry and version number', () => {
-
-    let fullName = `github:aurelia/framework@0.17.0`; 
+    let fullName = 'github:aurelia/framework@0.17.0';
     let match = getFullModuleName('aurelia/framework', config.map);
     expect(match).to.equal(fullName);
-
   });
 
   it('returns configured/specified module-name/pattern itself when no match found', () => {
-    let name = '[*]'; 
+    let name = '[*]';
     let match = getFullModuleName(name, config.map);
     expect(match).to.equal(name);
 
-    name = 'app/**/**'; 
+    name = 'app/**/**';
     match = getFullModuleName(name, config.map);
     expect(match).to.equal(name);
   });
@@ -46,5 +43,4 @@ describe('getFullModuleName', () => {
     let fn = getFullModuleName.bind(undefined, moduleName, config.map);
     expect(fn).to.throw(/A version conflict was found among the module names specified/);
   });
-
 });

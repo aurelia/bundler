@@ -1,22 +1,12 @@
-import {
-  expect
-}
-from 'chai';
-import {
-  readConfig, serializeConfig
-}
-from '../lib/config-serializer.js';
+import {expect} from 'chai';
+import {readConfig, serializeConfig} from '../lib/config-serializer.js';
 
 describe('Config Serializer', () => {
-
-  let inpCfg = `System.config({ defaultJSExtensions: true })`;
-
-
+  let inpCfg = 'System.config({ defaultJSExtensions: true })';
   it('reads configuration from the config file', () => {
     let cfg = readConfig(inpCfg);
     expect(cfg.defaultJSExtensions).to.equal(true);
   });
-
 
   it('can serialize updated configuration', () => {
     let cfg = readConfig(inpCfg);
@@ -29,12 +19,12 @@ describe('Config Serializer', () => {
       "app/main"
     ]
   }
-})`;
+});`;
 
     cfg.bundles = {
       'app-bundle.js': [
-        "app/boot",
-        "app/main",
+        'app/boot',
+        'app/main'
       ]
     };
 
@@ -42,21 +32,20 @@ describe('Config Serializer', () => {
     expect(str).to.be.equal(outCfg);
   });
 
-  it("does not quote top-level keys", () => {
-
+  it('does not quote top-level keys', () => {
     let cfg = {
       defaultJSExtensions: true,
       bundles: {
-        "app-bundle.js": [
-          "app/boot",
-          "app/main"
+        'app-bundle.js': [
+          'app/boot',
+          'app/main'
         ]
       },
       depCache: {
-        "a": "b",
-         c: "d"
+        'a': 'b',
+        c: 'd'
       },
-      "map" : {}
+      'map': {}
     };
 
     let out =
@@ -73,11 +62,9 @@ describe('Config Serializer', () => {
     "c": "d"
   },
   map: {}
-})`;
+});`;
 
     let str = serializeConfig(cfg);
     expect(str).to.be.equal(out);
-
   });
-
-})
+});
