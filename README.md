@@ -32,7 +32,7 @@ var bundles = {
       },
       "cssminopts" : {
                                         // Supports all options here https://github.com/jakubpawlowicz/clean-css#how-to-use-clean-css-api 
-      }
+      },
       "rev": true                       // Set it to true for revison suport. Default is false
     }
   },
@@ -48,7 +48,7 @@ var bundles = {
     }
   },
   "view-bundle": {
-    "skip" : true
+    "skip" : true,
     "htmlimport": true,                 // Set it to `true` for html import based view bundle.
     "includes": "dist/*.html",
     "options": {
