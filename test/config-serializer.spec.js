@@ -1,5 +1,10 @@
 import {expect} from 'chai';
-import {readConfig, serializeConfig} from '../lib/config-serializer.js';
+import {
+  isSystem,
+  isSystemJS,
+  readConfig, 
+  serializeConfig
+} from '../lib/config-serializer.js';
 
 describe('Config Serializer', () => {
   let inpCfg = 'System.config({ defaultJSExtensions: true })';
@@ -48,6 +53,15 @@ describe('Config Serializer', () => {
     expect(str).to.be.equal(outCfg);
   });
 
+  it('can detect System and/or SystemJS', ()=> {
+    let inpCfg = 'System.config({ defaultJSExtensions: true })';
+    let inpCfg2 = 'SystemJS.config({ valueFrom2ndFile : true })';
+    
+    expect(isSystem(inpCfg)).to.equal(true);
+    expect(isSystemJS(inpCfg2)).to.equal(true);
+    
+  });
+  
   it('does not quote top-level keys', () => {
     let cfg = {
       defaultJSExtensions: true,
