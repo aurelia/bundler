@@ -40,7 +40,6 @@ var _lodash = require('lodash');
 var _lodash2 = _interopRequireDefault(_lodash);
 
 function bundle(cfg) {
-
   var builder = new _systemjsBuilder2['default'](cfg.baseURL, cfg.configPath);
   builder.config(cfg.builderCfg);
 

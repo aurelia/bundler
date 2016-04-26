@@ -11,19 +11,29 @@ var vm = require('vm');
 var fs = require('fs');
 
 function readConfig(cfgCode) {
+  var cfg = {};
   var sandbox = {};
-  sandbox.System = {
-    cfg: {},
-    config: function config(cfg) {
-      for (var key in cfg) {
-        this.cfg[key] = cfg[key];
-      }
+  var configFunc = function configFunc(_cfg) {
+    for (var key in _cfg) {
+      cfg[key] = _cfg[key];
     }
   };
 
-  var ctx = vm.createContext(sandbox);
-  vm.runInContext(cfgCode, sandbox);
-  return sandbox.System.cfg;
+  sandbox.System = {
+    config: configFunc
+  };
+
+  sandbox.SystemJS = {
+    config: configFunc
+  };
+
+  vm.createContext(sandbox);
+
+  cfgCode.forEach(function (c) {
+    vm.runInContext(c, sandbox);
+  });
+
+  return cfg;
 }
 
 function serializeConfig(config) {
@@ -34,7 +44,19 @@ function serializeConfig(config) {
 }
 
 function getAppConfig(configPath) {
-  var appCfg = readConfig(fs.readFileSync(configPath, 'utf8'));
+  var configCode = [];
+
+  if (typeof configPath === 'string') {
+    configCode.push(fs.readFileSync(configPath, 'utf8'));
+  }
+
+  if (Array.isArray(configPath)) {
+    configPath.forEach(function (cp) {
+      configCode.push(fs.readFileSync(cp, 'utf8'));
+    });
+  }
+
+  var appCfg = readConfig(configCode);
 
   if (!appCfg.map) {
     appCfg.map = {};

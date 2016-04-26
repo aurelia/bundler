@@ -53,6 +53,28 @@ describe('Config Serializer', () => {
     expect(str).to.be.equal(outCfg);
   });
 
+  it('can serialize System configuration', () => {
+    let cfg = readConfig([inpCfg]);
+    let outCfg =
+`System.config({
+  defaultJSExtensions: true
+});`;
+
+    let str = serializeConfig(cfg);
+    expect(str).to.be.equal(outCfg);
+  });
+  
+  it('can serialize System configuration', () => {
+    let cfg = readConfig([inpCfg]);
+    let outCfg =
+`SystemJS.config({
+  defaultJSExtensions: true
+});`;
+
+    let str = serializeConfig(cfg, true);
+    expect(str).to.be.equal(outCfg);
+  });
+  
   it('can detect System and/or SystemJS', ()=> {
     let inpCfg = 'System.config({ defaultJSExtensions: true })';
     let inpCfg2 = 'SystemJS.config({ valueFrom2ndFile : true })';
