@@ -5,10 +5,16 @@ describe('Config Serializer', () => {
   let inpCfg = 'System.config({ defaultJSExtensions: true })';
   
   it('reads configuration from the config file', () => {
-    let cfg = readConfig(inpCfg);
+    let cfg = readConfig([inpCfg]);
     expect(cfg.defaultJSExtensions).to.equal(true);
   });
 
+  it('can read configuration from SystemJS', () => {
+    let SystemJSCfg = 'SystemJS.config({ defaultJSExtensions: true })';
+    let cfg = readConfig([SystemJSCfg]);
+    expect(cfg.defaultJSExtensions).to.equal(true);
+  });
+  
   it('reads config from multiple files', () => {
     let inpCfg = 'System.config({ defaultJSExtensions: true })';
     let inpCfg2 = 'System.config({ valueFrom2ndFile : true })';
@@ -16,10 +22,10 @@ describe('Config Serializer', () => {
     let cfg = readConfig([inpCfg, inpCfg2]);
     expect(cfg.defaultJSExtensions).to.equal(true);
     expect(cfg.valueFrom2ndFile).to.equal(true);
-  })
+  });
 
   it('can serialize updated configuration', () => {
-    let cfg = readConfig(inpCfg);
+    let cfg = readConfig([inpCfg]);
     let outCfg =
 `System.config({
   defaultJSExtensions: true,
