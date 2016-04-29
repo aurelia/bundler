@@ -4,6 +4,8 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 exports.readConfig = readConfig;
+exports.isSystemJS = isSystemJS;
+exports.isSystem = isSystem;
 exports.serializeConfig = serializeConfig;
 exports.getAppConfig = getAppConfig;
 exports.saveAppConfig = saveAppConfig;
@@ -36,10 +38,51 @@ function readConfig(cfgCode) {
   return cfg;
 }
 
-function serializeConfig(config) {
+function isSystemJS(cfgCode) {
+  var res = false;
+  var sandbox = {};
+
+  sandbox.SystemJS = {
+    config: function config(cfg) {
+      res = true;
+    }
+  };
+  sandbox.System = {
+    config: function config(cfg) {}
+  };
+
+  vm.createContext(sandbox);
+  vm.runInContext(cfgCode, sandbox);
+
+  return res;
+}
+
+function isSystem(cfgCode) {
+  var res = false;
+  var sandbox = {};
+  sandbox.System = {
+    config: function config(cfg) {
+      res = true;
+    }
+  };
+
+  sandbox.SystemJS = {
+    config: function config(cfg) {}
+  };
+
+  vm.createContext(sandbox);
+  vm.runInContext(cfgCode, sandbox);
+
+  return res;
+}
+
+function serializeConfig(config, _isSystemJS) {
   var tab = '  ';
   var json = JSON.stringify(config, null, 2).replace(new RegExp('^' + tab + '"(\\w+)"', 'mg'), tab + '$1');
 
+  if (_isSystemJS) {
+    return 'SystemJS.config(' + json + ');';
+  }
   return 'System.config(' + json + ');';
 }
 
@@ -65,5 +108,5 @@ function getAppConfig(configPath) {
 }
 
 function saveAppConfig(configPath, config) {
-  fs.writeFileSync(configPath, serializeConfig(config));
+  fs.writeFileSync(configPath, serializeConfig(config, isSystemJS(fs.readFileSync(configPath, 'utf8'))));
 }
