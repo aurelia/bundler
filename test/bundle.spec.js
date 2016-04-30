@@ -4,6 +4,6 @@ import { config } from './config.js';
 
 describe('bundle', ()=> {
   it('test', ()=> {
-    expect(true).to.be(true)
+    expect(true).to.be.equal(true)
   });
 });
