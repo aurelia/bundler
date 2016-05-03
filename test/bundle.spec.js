@@ -1,5 +1,5 @@
 import expect  from 'expect';
-import { writeOutput, __RewireAPI__ as bundler} from '../lib/bundler';
+import { writeOutput, injectBundle, __RewireAPI__ as bundler} from '../lib/bundler';
 
 let fs = {
    existsSync: function(path){ },
@@ -13,9 +13,17 @@ let path = {
    resolve: function(path1, path2) { },
 };
 
+let saveAppConfigSpy = expect.createSpy((cfgPath, appCfg) => {});
+
 bundler.__Rewire__('fs', fs);
 bundler.__Rewire__('path', path);
+bundler.__Rewire__('saveAppConfig', saveAppConfig);
 
+describe('inject bundle', ()=> {
+   
+   injectBundle(builder, output, outfile, cfg);
+    
+})
 
 describe('write bundle output', ()=> {
   it('writes the bundler file to disk', ()=> {
