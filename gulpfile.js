@@ -4,14 +4,7 @@ const srcFiles      = ['lib/**/*.js'];
 
 gulp.task('build', function() {
   return gulp.src(srcFiles)
-    .pipe(babel({
-      stage: 2,
-      optional: [
-        'es7.decorators',
-        'es7.classProperties',
-        'runtime'
-      ]
-    }))
+    .pipe(babel())
     .pipe(gulp.dest('dist'));
 });
 
