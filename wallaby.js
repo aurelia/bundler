@@ -11,14 +11,7 @@ module.exports = function (wallaby) {
     },
     testFramework: 'mocha',
     compilers: {
-      '**/*.js': wallaby.compilers.babel({
-        stage: 2,
-        optional: [
-          'es7.decorators',
-          'es7.classProperties',
-          'runtime'
-        ]
-      })
+      '**/*.js': wallaby.compilers.babel()
     }
   };
 };
