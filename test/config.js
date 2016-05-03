@@ -1,4 +1,4 @@
-export let config = {
+export default  {
   map: {
     "aurelia-animator-css": "github:aurelia/animator-css@0.17.0",
     "aurelia-binding": "github:aurelia/binding@0.10.0",

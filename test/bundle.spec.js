@@ -1,6 +1,5 @@
 import expect  from 'expect';
 import { writeOutput, __RewireAPI__ as bundler} from '../lib/bundler';
-import { config } from './config.js';
 
 let fs = {
    existsSync: function(path){ },
@@ -16,6 +15,7 @@ let path = {
 
 bundler.__Rewire__('fs', fs);
 bundler.__Rewire__('path', path);
+
 
 describe('write bundle output', ()=> {
   it('writes the bundler file to disk', ()=> {
@@ -60,7 +60,6 @@ describe('write bundle output', ()=> {
 
        expect(unlinkSpy.calls.length).toBe(1);
     });
-
   });
 
 });
