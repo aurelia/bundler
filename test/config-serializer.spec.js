@@ -64,7 +64,7 @@ describe('Config Serializer', () => {
     expect(str).toBe(outCfg);
   });
   
-  it('can serialize System configuration', () => {
+  it('can serialize SystemJS configuration', () => {
     let cfg = readConfig([inpCfg]);
     let outCfg =
 `SystemJS.config({
