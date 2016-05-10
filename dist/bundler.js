@@ -68,7 +68,6 @@ function createBuildExpression(cfg) {
 
 function createFetchHook(cfg) {
   return function (load, fetch) {
-
     var address = (0, _systemjsBuilderLibUtils.fromFileURL)(load.address);
     var ext = _path2['default'].extname(address);
 
@@ -111,7 +110,6 @@ function createFetchHook(cfg) {
 }
 
 function bundle(cfg) {
-
   var buildExpression = createBuildExpression(cfg);
   cfg.options.fetch = createFetchHook(cfg);
 
@@ -124,25 +122,22 @@ function bundle(cfg) {
   return _bluebird2['default'].all(tasks);
 }
 
-;
-
 function depCache(cfg) {
   var buildExpression = createBuildExpression(cfg);
   return _depCache(buildExpression, cfg);
 }
 
 function _depCache(buildExpression, cfg) {
-
   var builder = new _systemjsBuilder2['default'](cfg.baseURL, cfg.configPath);
   builder.config(cfg.builderCfg);
 
   return builder.trace(buildExpression, cfg.options).then(function (tree) {
-    var _depCache = builder.getDepCache(tree);
+    var _dc = builder.getDepCache(tree);
 
     var appCfg = (0, _configSerializer.getAppConfig)(cfg.configPath);
-    var depCache = appCfg.depCache || {};
+    var dc = appCfg.depCache || {};
 
-    _lodash2['default'].assign(depCache, _depCache);
+    _lodash2['default'].assign(dc, _dc);
     appCfg.depCache = depCache;
 
     (0, _configSerializer.saveAppConfig)(cfg.configPath, appCfg);
@@ -152,12 +147,10 @@ function _depCache(buildExpression, cfg) {
 }
 
 function _bundle(buildExpression, cfg) {
-
   var builder = new _systemjsBuilder2['default'](cfg.baseURL, cfg.configPath);
   builder.config(cfg.builderCfg);
 
   return builder.bundle(buildExpression, cfg.options).then(function (output) {
-
     var outfile = utils.getOutFileName(output.source, cfg.bundleName + '.js', cfg.options.rev);
     writeOutput(output, outfile, cfg.baseURL, cfg.force);
 

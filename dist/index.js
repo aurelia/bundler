@@ -28,10 +28,6 @@ var _htmlImportTemplateBundler = require('./html-import-template-bundler');
 
 var hitb = _interopRequireWildcard(_htmlImportTemplateBundler);
 
-var _lodash = require('lodash');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
 var _utils = require('./utils');
 
 var _unbundle = require('./unbundle');
@@ -39,7 +35,6 @@ var _unbundle = require('./unbundle');
 _defaults(exports, _interopExportWildcard(_unbundle, _defaults));
 
 function bundle(_config) {
-
   var tasks = [];
   var config = (0, _utils.getCommonConfig)(_config);
 
@@ -47,7 +42,6 @@ function bundle(_config) {
 
   var bundles = config.bundles;
   _Object$keys(bundles).forEach(function (key) {
-
     var cfg = bundles[key];
     if (cfg.skip) return;
 
@@ -57,12 +51,10 @@ function bundle(_config) {
       tasks.push(_bundle(cfg, key, config));
     }
   });
-
   return _bluebird2['default'].all(tasks);
 }
 
 function depCache(_config) {
-
   var tasks = [];
   var config = (0, _utils.getCommonConfig)(_config);
 
@@ -70,12 +62,10 @@ function depCache(_config) {
 
   var bundles = config.bundles;
   _Object$keys(bundles).forEach(function (key) {
-
     var cfg = bundles[key];
 
     if (cfg.skip) return;
     if (cfg.htmlimport) return;
-
     tasks.push(bundler.depCache((0, _utils.getBundleConfig)(cfg, key, config)));
   });
 

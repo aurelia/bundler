@@ -4,7 +4,10 @@ const srcFiles      = ['lib/**/*.js'];
 
 gulp.task('build', function() {
   return gulp.src(srcFiles)
-    .pipe(babel())
+    .pipe(babel({
+      babelrc: false,
+      presets: ["es2015"]
+    }))
     .pipe(gulp.dest('dist'));
 });
 
