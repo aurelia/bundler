@@ -1,17 +1,19 @@
 'use strict';
 
-var _Object$keys = require('babel-runtime/core-js/object/keys')['default'];
-
-var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
-
-var _interopRequireWildcard = require('babel-runtime/helpers/interop-require-wildcard')['default'];
-
-var _defaults = require('babel-runtime/helpers/defaults')['default'];
-
-var _interopExportWildcard = require('babel-runtime/helpers/interop-export-wildcard')['default'];
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
+});
+
+var _unbundle = require('./unbundle');
+
+Object.keys(_unbundle).forEach(function (key) {
+  if (key === "default") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _unbundle[key];
+    }
+  });
 });
 exports.bundle = bundle;
 exports.depCache = depCache;
@@ -30,9 +32,9 @@ var hitb = _interopRequireWildcard(_htmlImportTemplateBundler);
 
 var _utils = require('./utils');
 
-var _unbundle = require('./unbundle');
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-_defaults(exports, _interopExportWildcard(_unbundle, _defaults));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function bundle(_config) {
   var tasks = [];
@@ -41,7 +43,7 @@ function bundle(_config) {
   (0, _utils.validateConfig)(config);
 
   var bundles = config.bundles;
-  _Object$keys(bundles).forEach(function (key) {
+  Object.keys(bundles).forEach(function (key) {
     var cfg = bundles[key];
     if (cfg.skip) return;
 
@@ -51,7 +53,7 @@ function bundle(_config) {
       tasks.push(_bundle(cfg, key, config));
     }
   });
-  return _bluebird2['default'].all(tasks);
+  return _bluebird2.default.all(tasks);
 }
 
 function depCache(_config) {
@@ -61,7 +63,7 @@ function depCache(_config) {
   (0, _utils.validateConfig)(config);
 
   var bundles = config.bundles;
-  _Object$keys(bundles).forEach(function (key) {
+  Object.keys(bundles).forEach(function (key) {
     var cfg = bundles[key];
 
     if (cfg.skip) return;
@@ -69,7 +71,7 @@ function depCache(_config) {
     tasks.push(bundler.depCache((0, _utils.getBundleConfig)(cfg, key, config)));
   });
 
-  return _bluebird2['default'].all(tasks);
+  return _bluebird2.default.all(tasks);
 }
 
 function _bundle(_bundleCfg, bundleName, config) {
