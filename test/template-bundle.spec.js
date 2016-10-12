@@ -1,22 +1,42 @@
+import fs from 'fs';
 import expect from 'expect';
 import revHash from 'rev-hash';
-import {bundle, writeOutput, __RewireAPI__ as bundler} from '../lib/html-import-template-bundler';
+import {bundle, getOutputFileName, __RewireAPI__ as bundler} from '../lib/html-import-template-bundler';
 
 let fileBody = '<template>test</template>';
-let fs = {
+let fsMock = {
   existsSync: path => { },
   readFileSync: path => fileBody,
   writeFileSync: (path, string) => { }
 };
 
-bundler.__Rewire__('fs', fs);
+bundler.__Rewire__('fs', fsMock);
 
 describe('A template bundler', () => {
+  let originalLstat = fs.lstatSync;
+
+  /**
+   * We have to overwrite the lstat fn this way because the babel rewire plugin only access own modules
+   * but we need to mock glob.sync() which uses lstatSync to check if a file exists
+   */
+  beforeEach(() => {
+    fs.lstatSync = () => ({
+      isSymbolicLink: () => false,
+      isDirectory: () => false
+    });
+  });
+
+  /**
+   * Teardown mocks
+   */
+  afterEach(() => {
+    fs.lstatSync = originalLstat;
+  });
   /**
    * Test if the template bundling writes the templates properly into one file
    */
   it('writes the bundle to disk', () => {
-    let spy = expect.spyOn(fs, 'writeFileSync');
+    let spy = expect.spyOn(fsMock, 'writeFileSync');
     bundle({baseURL: '.', bundleName: 'tmp-bundle', includes: ['tmp1', 'tmp2']});
     expect(spy.calls.length).toBe(1);
     expect(spy.calls[0].arguments[1]).toBe('<template id="tmp1">test</template>\n<template id="tmp2">test</template>');
@@ -31,8 +51,8 @@ describe('A template bundler', () => {
     let content = 'test\ntest';
     // Create expected hash and generate urls
     let expectedHash = revHash(new Buffer(content, 'utf-8'));
-    let revUrl = writeOutput(baseURL, bundleName, content, {rev: true});
-    let revLessUrl = writeOutput(baseURL, bundleName, content, {rev: false});
+    let revUrl = getOutputFileName(baseURL, bundleName, content, true);
+    let revLessUrl = getOutputFileName(baseURL, bundleName, content, false);
 
     expect(revUrl).toContain(expectedHash);
     expect(revLessUrl).toNotContain(expectedHash);
