@@ -5,9 +5,13 @@ import {bundle, getOutputFileName, __RewireAPI__ as bundler} from '../lib/html-i
 
 let fileBody = '<template>test</template>';
 let fsMock = {
-  existsSync: path => { },
+  existsSync: path => {
+    return;
+  },
   readFileSync: path => fileBody,
-  writeFileSync: (path, string) => { }
+  writeFileSync: (path, content) => {
+    return;
+  }
 };
 
 bundler.__Rewire__('fs', fsMock);

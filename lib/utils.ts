@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import revPath from 'rev-path';
 import revHash from 'rev-hash';
-import fs from 'fs';
+import * as fs from 'fs';
 import path from 'path';
 
 export function getOutFileName(source, fileName, rev) {
@@ -10,41 +10,40 @@ export function getOutFileName(source, fileName, rev) {
 
 export function validateConfig(config) {
   if (!fs.existsSync(config.baseURL)) {
-    throw new Error(`Path '${path.resolve(config.baseURL)}' does not exist. Please provide a valid 'baseURL' in your bundle configuration.`);
+    throw new Error(
+      `Path '${path.resolve(config.baseURL)}' does not exist. Please provide a valid 'baseURL' in your bundle configuration.`);
   }
-
   let configPaths = [];
-  if(typeof config.configPath === 'string') {
+  if (typeof config.configPath === 'string') {
     configPaths.push(config.configPath);
   }
-  
-  if(Array.isArray(config.configPath)) {
+  if (Array.isArray(config.configPath)) {
     config.configPath.forEach(p => configPaths.push(p));
   }
-  
   configPaths.forEach(p => {
     if (!fs.existsSync(p)) {
-      throw new Error(`File '${path.resolve(p)}' was not found! Please provide a valid 'config.js' file for use during bundling.`);
+      throw new Error(
+        `File '${path.resolve(p)}' was not found! Please provide a valid 'config.js' file for use during bundling.`);
     }
   });
 }
 
 export function getHTMLMinOpts(opts) {
   return _.defaultsDeep(opts, {
-    removeComments: true,
-    removeCommentsFromCDATA: true,
-    removeCDATASectionsFromCDATA: true,
+    caseSensitive: true,
+    collapseBooleanAttributes: true,
     collapseWhitespace: true,
     conservativeCollapse: true,
-    collapseBooleanAttributes: true,
-    useShortDoctype: true,
+    removeCDATASectionsFromCDATA: true,
+    removeComments: true,
+    removeCommentsFromCDATA: true,
     removeEmptyAttributes: true,
+    removeRedundantAttributes: false,
     removeScriptTypeAttributes: true,
     removeStyleLinkTypeAttributes: true,
-    caseSensitive: true,
-    minifyJS: true,
+    useShortDoctype: true,
     minifyCSS: true,
-    removeRedundantAttributes: false
+    minifyJS: true
   });
 }
 
@@ -58,27 +57,28 @@ export function getCSSMinOpts(opts) {
   });
 }
 
-export function getBundleConfig(_bundleCfg, bundleName, config) {
-  return _.defaultsDeep(_bundleCfg, {
-    includes: [],
-    excludes: [],
-    options: {
-      rev: false,
-      minify: false,
-      inject: true,
-      htmlminopts: {},
-      cssminopts: {},
-    },
-    bundleName: bundleName,
-    force: config.force,
+export function getBundleConfig(bundleCfg, bundleName, config) {
+  return _.defaultsDeep(bundleCfg, {
     baseURL: config.baseURL,
-    configPath: config.configPath,
     builderCfg: config.builderCfg,
-    injectionConfigPath: config.injectionConfigPath});
+    bundleName: bundleName,
+    configPath: config.configPath,
+    excludes: [],
+    includes: [],
+    injectionConfigPath: config.injectionConfigPath,
+    force: config.force,
+    options: {
+      cssminopts: {},
+      htmlminopts: {},
+      inject: true,
+      minify: false,
+      rev: false,
+    },
+  });
 }
 
-export function getHtmlImportBundleConfig(_bundleCfg, bundleName, config) {
-  let cfg = _.defaultsDeep(_bundleCfg, {
+export function getHtmlImportBundleConfig(bundleCfg, bundleName, config) {
+  let cfg = _.defaultsDeep(bundleCfg, {
     htmlimport: true,
     includes: '*.html',
     bundleName: bundleName,
@@ -96,7 +96,7 @@ export function getHtmlImportBundleConfig(_bundleCfg, bundleName, config) {
       cfg.options.inject = {
         indexFile: 'index.html',
         destFile: 'index.html'
-      }
+      };
     } else {
       cfg.options.inject.indexFile = cfg.options.inject.indexFile || 'index.html';
       cfg.options.inject.destFile = cfg.options.inject.destFile || 'index.html';
@@ -106,25 +106,25 @@ export function getHtmlImportBundleConfig(_bundleCfg, bundleName, config) {
   return cfg;
 }
 
-export function getCommonConfig(_config) {
-  return _.defaults(_config, {
-    force: false,
+export function getCommonConfig(config) {
+  return _.defaults(config, {
     baseURL: '.',
-    configPath: './config.js',
-    injectionConfigPath: getDefaultInjectionConfigFilePath(_config.configPath),
     builderCfg: {},
-    bundles: {}
+    bundles: {},
+    configPath: './config.js',
+    force: false,
+    injectionConfigPath: getDefaultInjectionConfigFilePath(config.configPath),
   });
 }
 
 function getDefaultInjectionConfigFilePath(configPath) {
-  if(typeof configPath === 'string') {
+  if (typeof configPath === 'string') {
      return configPath;
   }
 
-  if(Array.isArray(configPath)) {
+  if (Array.isArray(configPath)) {
     return configPath[0];
   }
-  
-  throw new Error('No bundle injection config file path provided. Set `injectionConfigPath` property in the bundle config.');
+  throw new Error(
+    'No bundle injection config file path provided. Set `injectionConfigPath` property in the bundle config.');
 }

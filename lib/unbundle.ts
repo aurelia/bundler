@@ -1,16 +1,16 @@
-import Promise from 'bluebird';
+import { Promise } from 'bluebird';
 import whacko from 'whacko';
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import { getAppConfig, saveAppConfig } from './config-serializer';
 import {
-  getCommonConfig, 
+  getCommonConfig,
   validateConfig,
   getHtmlImportBundleConfig
 } from './utils';
 
-export function unbundle(_config) {
-  let config =  getCommonConfig(_config);
+export function unbundle(cfg) {
+  let config =  getCommonConfig(cfg);
   validateConfig(config);
 
   let tasks = [
@@ -20,7 +20,6 @@ export function unbundle(_config) {
 
   return Promise.all(tasks);
 }
-
 
 function removeBundles(cfg) {
   let configPath = cfg.injectionConfigPath;
@@ -52,7 +51,7 @@ function _removeHtmlImportBundle(cfg) {
 
   let file = path.resolve(cfg.baseURL, cfg.options.inject.destFile);
 
-  if(!fs.existsSync(file)) {
+  if (!fs.existsSync(file)) {
     return Promise.resolve();
   }
 
@@ -65,7 +64,7 @@ function _removeHtmlImportBundle(cfg) {
       return Promise.resolve($);
     })
     .then(($) => {
-      return removeLinkInjections($)
+      return removeLinkInjections($);
     })
     .then(($) => {
       return Promise.promisify(fs.writeFile)(file, $.html());

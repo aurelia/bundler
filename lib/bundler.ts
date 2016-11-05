@@ -1,11 +1,8 @@
-import fs from 'fs';
-import Promise from 'bluebird';
-import {
-  toFileURL, fromFileURL
-}
-from 'systemjs-builder/lib/utils';
+import * as fs from 'fs';
+import { Promise } from 'bluebird';
+import * as sysUtil  from 'systemjs-builder/lib/utils.js';
 import Builder from 'systemjs-builder';
-import path from 'path';
+import * as path from 'path';
 import _ from 'lodash';
 import {
   getAppConfig, saveAppConfig
@@ -24,22 +21,20 @@ function createBuildExpression(cfg) {
   if (excludeExpression && excludeExpression.length > 0) {
     buildExpression = `${buildExpression} - ${excludeExpression}`;
   }
-
   return buildExpression;
 }
 
 function createFetchHook(cfg) {
-  return function(load, fetch) {
-    let address = fromFileURL(load.address);
+  return (load, fetch) => {
+    let address = sysUtil.fromFileURL(load.address);
     let ext = path.extname(address);
 
-    if(!(ext === '.html' || ext === '.css')) {
+    if (!(ext === '.html' || ext === '.css')) {
       return fetch(load);
     }
-    
-    let plugin = path.basename(fromFileURL(load.name.split('!')[1]));
+    let plugin = path.basename(sysUtil.fromFileURL(load.name.split('!')[1]));
 
-    if(!plugin.startsWith('plugin-text')) {
+    if (!plugin.startsWith('plugin-text')) {
       return fetch(load);
     }
 
@@ -92,26 +87,21 @@ function createBuilder(cfg) {
   let appCfg = getAppConfig(cfg.configPath);
 
   delete appCfg.baseURL;
-  
   builder.config(appCfg);
   builder.config(cfg.builderCfg);
-  
   return builder;
 }
 
 function _depCache(buildExpression, cfg) {
   let builder = createBuilder(cfg);
-  
   return builder.trace(buildExpression, cfg.options)
     .then(tree => {
-      let _dc = builder.getDepCache(tree);
-
+      let depCache = builder.getDepCache(tree);
       let configPath = cfg.injectionConfigPath;
       let appCfg = getAppConfig(configPath);
-      
       let dc = appCfg.depCache || {};
 
-      _.assign(dc, _dc);
+      _.assign(dc, depCache);
       appCfg.depCache = dc;
 
       saveAppConfig(configPath, appCfg);
@@ -120,24 +110,19 @@ function _depCache(buildExpression, cfg) {
     });
 }
 
-
 function _bundle(buildExpression, cfg) {
   let builder = createBuilder(cfg);
 
   return builder.bundle(buildExpression, cfg.options)
     .then((output) => {
       let outfile = utils.getOutFileName(output.source, cfg.bundleName + '.js', cfg.options.rev);
-      
       writeOutput(output, outfile, cfg.baseURL, cfg.force, cfg.options.sourceMaps);
-
-      if(cfg.options.sourceMaps) {
+      if (cfg.options.sourceMaps) {
         writeSourcemaps(output, outfile, cfg.baseURL, cfg.force);
       }
-      
       if (cfg.options.inject) {
         injectBundle(builder, output, outfile, cfg);
       }
-
       return Promise.resolve();
     });
 }
@@ -152,13 +137,12 @@ export function writeSourcemaps(output, outfile, baseURL, force) {
 
     fs.unlinkSync(outPath);
   } else {
-    let dirpath = path.dirname(outPath);
+    let dirPath = path.dirname(outPath);
 
-    if (!fs.existsSync(dirpath)) {
-      fs.mkdirSync(dirpath);
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath);
     }
   }
-
   fs.writeFileSync(outPath, output.sourceMap);
 }
 
@@ -172,27 +156,23 @@ export function writeOutput(output, outfile, baseURL, force, sourceMaps) {
 
     fs.unlinkSync(outPath);
   } else {
-    let dirpath = path.dirname(outPath);
+    let dirPath = path.dirname(outPath);
 
-    if (!fs.existsSync(dirpath)) {
-      fs.mkdirSync(dirpath);
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath);
     }
   }
-  
   let source = output.source;
-  
-  if(sourceMaps) {
-    let sourceMapFileName = path.basename(outPath) + '.map';    
+  if (sourceMaps) {
+    let sourceMapFileName = path.basename(outPath) + '.map';
     source += '\n//# sourceMappingURL=' + sourceMapFileName;
   }
-
   fs.writeFileSync(outPath, source);
 }
 
-
 export function injectBundle(builder, output, outfile, cfg) {
   let configPath = cfg.injectionConfigPath;
-  let bundleName = builder.getCanonicalName(toFileURL(path.resolve(cfg.baseURL, outfile)));
+  let bundleName = builder.getCanonicalName(sysUtil.toFileURL(path.resolve(cfg.baseURL, outfile)));
   let appCfg = getAppConfig(configPath);
 
   if (!appCfg.bundles) {
@@ -222,7 +202,7 @@ export function getFullModuleName(moduleName, map) {
   if (matches.length === 0) {
     return moduleName;
   }
-
-  throw new Error(
-    `A version conflict was found among the module names specified in the configuration for '${moduleName}'. Try including a full module name with a specific version number or resolve the conflict manually with jspm.`);
+  throw new Error(`A version conflict was found among the module 
+names specified in the configuration for '${moduleName}'. Try including a full module name with a specific ver
+sion number or resolve the conflict manually with jspm.`);
 }

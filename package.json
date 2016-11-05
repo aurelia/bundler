@@ -22,7 +22,12 @@
     "url": "http://github.com/aurelia/bundler"
   },
   "scripts": {
-    "test": "mocha --compilers js:babel-core/register"
+    "lint": "tslint --project tsconfig.json",
+    "pretest": "tsc 'test/*spec.ts' --module commonjs",
+    "test": "mocha",
+    "prebuild:compile": "rimraf 'dist/**'",
+    "build:compile": "tsc --project tsconfig.json --outDir dist --module commonjs",
+    "build": "npm run build:compile"
   },
   "dependencies": {
     "bluebird": "^2.9.25",
@@ -33,18 +38,27 @@
     "lodash": "^3.10.1",
     "rev-hash": "^1.0.0",
     "rev-path": "^1.0.0",
-    "systemjs-builder": "^0.15.16",
+    "systemjs-builder": "^0.15.33",
     "whacko": "^0.19.1"
   },
   "devDependencies": {
-    "babel-plugin-rewire": "^1.0.0-rc-2",
-    "babel-preset-es2015": "^6.6.0",
-    "babel-register": "^6.8.0",
-    "chai": "^3.4.1",
+    "@types/bluebird": "^3.0.35",
+    "@types/clean-css": "^3.4.30",
+    "@types/expect": "^1.13.30",
+    "@types/glob": "^5.0.30",
+    "@types/html-minifier": "^1.1.30",
+    "@types/lodash": "^4.14.38",
+    "@types/mocha": "^2.2.32",
+    "@types/sinon": "^1.16.31",
+    "cross-env": "^3.1.3",
     "eslint": "^3.8.1",
     "expect": "^1.19.0",
     "gulp": "~3.9.0",
     "gulp-babel": "^6.1.2",
-    "mocha": "^2.4.5"
+    "mocha": "^2.4.5",
+    "rimraf": "^2.5.4",
+    "sinon": "^1.17.6",
+    "tslint": "^3.15.1",
+    "typescript": "^2.0.7"
   }
 }

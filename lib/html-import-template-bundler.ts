@@ -1,9 +1,9 @@
 import Promise from 'bluebird';
 import whacko from 'whacko';
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import globby from 'globby';
-import sysUtils from 'systemjs-builder/lib/utils';
+import * as sysUtils from 'systemjs-builder/lib/utils.js';
 import * as utils from './utils';
 import Builder from 'systemjs-builder';
 
@@ -38,8 +38,8 @@ export function generateOutput(baseURL, includes, builder) {
     .sync(includes, {
       cwd: baseURL.replace(/\\/g, '/')
     })
-    .forEach(function(file) {
-      if(file != '.') {
+    .forEach((file) => {
+      if (file !== '.') {
         file = path.resolve(baseURL, file);
         let content = fs.readFileSync(file, {
           encoding: 'utf8'
@@ -65,13 +65,13 @@ function injectLink(outfile, baseURL, inject) {
   let bundleFile = path.resolve(baseURL, path.relative(baseURL, outfile));
   let indexFile = path.resolve(baseURL, inject.indexFile);
   let destFile = path.resolve(baseURL, inject.destFile);
-  let relpath = path.relative(path.dirname(indexFile), path.dirname(bundleFile)).replace(/\\/g, '/');
+  let relPath = path.relative(path.dirname(indexFile), path.dirname(bundleFile)).replace(/\\/g, '/');
 
-  let link = createLink(bundleFile, relpath);
+  let link = createLink(bundleFile, relPath);
   addLink(link, indexFile, destFile);
 }
 
-function addLink(link, indexFile, destFile){
+function addLink(link, indexFile, destFile) {
   let content = fs.readFileSync(indexFile, {
     encoding: 'utf8'
   });
@@ -85,11 +85,11 @@ function addLink(link, indexFile, destFile){
   fs.writeFileSync(destFile, $.html());
 }
 
-function createLink(bundleFile, relpath){
-  if (!relpath.startsWith('.')) {
-    return relpath ? './' + relpath + '/' + path.basename(bundleFile) : './' + path.basename(bundleFile);
+function createLink(bundleFile, relPath) {
+  if (!relPath.startsWith('.')) {
+    return relPath ? './' + relPath + '/' + path.basename(bundleFile) : './' + path.basename(bundleFile);
   } else {
-    return relpath + '/' + path.basename(bundleFile);
+    return relPath + '/' + path.basename(bundleFile);
   }
 }
 

@@ -1,6 +1,6 @@
 import  expect  from 'expect';
-import { getFullModuleName } from '../lib/bundler';
-import  config  from './config.js';
+import { getFullModuleName } from 'bundler';
+import  config  from './config';
 
 describe('getFullModuleName', () => {
   it('is defined', () => {
@@ -20,7 +20,6 @@ describe('getFullModuleName', () => {
     match = getFullModuleName(moduleName, config.map);
     expect(match).toBe(moduleName);
   });
-
 
   it('returns full module name with version when module name is specified without registry and version number', () => {
     let fullName = 'github:aurelia/framework@0.17.0';
