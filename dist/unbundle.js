@@ -1,5 +1,5 @@
 "use strict";
-var bluebird_1 = require('bluebird');
+var Promise = require('bluebird');
 var whacko_1 = require('whacko');
 var fs = require('fs');
 var path = require('path');
@@ -12,7 +12,7 @@ function unbundle(cfg) {
         removeBundles(config),
         removeHtmlImportBundles(config)
     ];
-    return bluebird_1.Promise.all(tasks);
+    return Promise.all(tasks);
 }
 exports.unbundle = unbundle;
 function removeBundles(cfg) {
@@ -21,7 +21,7 @@ function removeBundles(cfg) {
     delete appCfg.bundles;
     delete appCfg.depCache;
     config_serializer_1.saveAppConfig(configPath, appCfg);
-    return bluebird_1.Promise.resolve();
+    return Promise.resolve();
 }
 function removeHtmlImportBundles(config) {
     var tasks = [];
@@ -33,29 +33,29 @@ function removeHtmlImportBundles(config) {
             tasks.push(_removeHtmlImportBundle(utils_1.getHtmlImportBundleConfig(cfg, key, config)));
         }
     });
-    return bluebird_1.Promise.all(tasks);
+    return Promise.all(tasks);
 }
 function _removeHtmlImportBundle(cfg) {
     var file = path.resolve(cfg.baseURL, cfg.options.inject.destFile);
     if (!fs.existsSync(file)) {
-        return bluebird_1.Promise.resolve();
+        return Promise.resolve();
     }
-    return bluebird_1.Promise
+    return Promise
         .promisify(fs.readFile)(file, {
         encoding: 'utf8'
     })
         .then(function (content) {
         var $ = whacko_1.default.load(content);
-        return bluebird_1.Promise.resolve($);
+        return Promise.resolve($);
     })
         .then(function ($) {
         return removeLinkInjections($);
     })
         .then(function ($) {
-        return bluebird_1.Promise.promisify(fs.writeFile)(file, $.html());
+        return Promise.promisify(fs.writeFile)(file, $.html());
     });
 }
 function removeLinkInjections($) {
     $('link[aurelia-view-bundle]').remove();
-    return bluebird_1.Promise.resolve($);
+    return Promise.resolve($);
 }

@@ -1,15 +1,15 @@
 "use strict";
-var bluebird_1 = require('bluebird');
+var Promise = require('bluebird');
 var whacko_1 = require('whacko');
 var fs = require('fs');
 var path = require('path');
 var globby_1 = require('globby');
 var sysUtils = require('systemjs-builder/lib/utils.js');
 var utils = require('./utils');
-var systemjs_builder_1 = require('systemjs-builder');
+var Builder = require('systemjs-builder');
 function bundle(cfg) {
     var baseURL = path.resolve(cfg.baseURL);
-    var builder = new systemjs_builder_1.default(cfg.baseURL, cfg.configPath);
+    var builder = new Builder(cfg.baseURL, cfg.configPath);
     builder.config(cfg.builderCfg);
     var output = generateOutput(baseURL, cfg.includes, builder);
     var outputFileName = getOutputFileName(baseURL, cfg.bundleName, output, cfg.options && cfg.options.rev);
@@ -23,7 +23,7 @@ function bundle(cfg) {
     if (cfg.options && cfg.options.inject) {
         injectLink(outputFileName, baseURL, cfg.options.inject);
     }
-    return bluebird_1.default.resolve();
+    return Promise.resolve();
 }
 exports.bundle = bundle;
 function generateOutput(baseURL, includes, builder) {

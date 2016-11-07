@@ -1,4 +1,4 @@
-import Promise from 'bluebird';
+import * as Promise from 'bluebird';
 import * as bundler from './bundler';
 import * as hitb from './html-import-template-bundler';
 import {
@@ -11,7 +11,7 @@ import {
 export * from './unbundle';
 
 export function bundle(bundleConfig) {
-  let tasks = [];
+  let tasks: Promise<void>[] = [];
   let commonCfg = getCommonConfig(bundleConfig);
 
   validateConfig(commonCfg);
@@ -61,7 +61,7 @@ function _bundle(bundleCfg, bundleName, config) {
   return bundler.bundle(getBundleConfig(bundleCfg, bundleName, config));
 }
 
-function _bundleHtmlImportTemplate(bundleCfg, bundleName, config) {
+function _bundleHtmlImportTemplate(bundleOpts, bundleName, config) {
   return hitb.bundle(
-     getHtmlImportBundleConfig(bundleCfg, bundleName, config));
+     getHtmlImportBundleConfig(bundleOpts, bundleName, config));
 }

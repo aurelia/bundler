@@ -1,11 +1,11 @@
-import Promise from 'bluebird';
+import * as Promise from 'bluebird';
 import whacko from 'whacko';
 import * as fs from 'fs';
 import * as path from 'path';
 import globby from 'globby';
 import * as sysUtils from 'systemjs-builder/lib/utils.js';
 import * as utils from './utils';
-import Builder from 'systemjs-builder';
+import * as Builder from 'systemjs-builder';
 
 export function bundle(cfg) {
   let baseURL = path.resolve(cfg.baseURL);
@@ -32,7 +32,7 @@ export function bundle(cfg) {
 }
 
 export function generateOutput(baseURL, includes, builder) {
-  let templates = [];
+  let templates: string[] = [];
 
   globby
     .sync(includes, {

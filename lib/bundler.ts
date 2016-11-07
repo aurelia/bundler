@@ -1,18 +1,15 @@
 import * as fs from 'fs';
-import { Promise } from 'bluebird';
+import * as Promise from 'bluebird';
 import * as sysUtil  from 'systemjs-builder/lib/utils.js';
-import Builder from 'systemjs-builder';
+import * as Builder from 'systemjs-builder';
 import * as path from 'path';
-import _ from 'lodash';
-import {
-  getAppConfig, saveAppConfig
-}
-from './config-serializer';
+import * as _ from 'lodash';
 import * as utils from './utils';
-import htmlminifier from 'html-minifier';
-import CleanCSS from 'clean-css';
+import {getAppConfig, saveAppConfig} from './config-serializer';
+import * as htmlminifier from 'html-minifier';
+import * as CleanCSS from 'clean-css';
 
-function createBuildExpression(cfg) {
+function createBuildExpression(cfg): string {
   let appCfg = getAppConfig(cfg.configPath);
   let includeExpression = cfg.includes.map(m => getFullModuleName(m, appCfg.map)).join(' + ');
   let excludeExpression = cfg.excludes.map(m => getFullModuleName(m, appCfg.map)).join(' - ');
@@ -32,6 +29,7 @@ function createFetchHook(cfg) {
     if (!(ext === '.html' || ext === '.css')) {
       return fetch(load);
     }
+
     let plugin = path.basename(sysUtil.fromFileURL(load.name.split('!')[1]));
 
     if (!plugin.startsWith('plugin-text')) {
@@ -110,7 +108,7 @@ function _depCache(buildExpression, cfg) {
     });
 }
 
-function _bundle(buildExpression, cfg) {
+function _bundle(buildExpression: string, cfg: any) {
   let builder = createBuilder(cfg);
 
   return builder.bundle(buildExpression, cfg.options)
@@ -202,7 +200,8 @@ export function getFullModuleName(moduleName, map) {
   if (matches.length === 0) {
     return moduleName;
   }
-  throw new Error(`A version conflict was found among the module 
-names specified in the configuration for '${moduleName}'. Try including a full module name with a specific ver
-sion number or resolve the conflict manually with jspm.`);
+
+  throw new Error(`A version conflict was found among the module names specified \
+  in the configuration for '${moduleName}'. Try including a full module name with a specific version \
+  number or resolve the conflict manually with jspm.`);
 }

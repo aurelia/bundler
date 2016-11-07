@@ -2,7 +2,7 @@
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
-var bluebird_1 = require('bluebird');
+var Promise = require('bluebird');
 var bundler = require('./bundler');
 var hitb = require('./html-import-template-bundler');
 var utils_1 = require('./utils');
@@ -25,7 +25,7 @@ function bundle(bundleConfig) {
             tasks.push(_bundle(cfg, key, commonCfg));
         }
     });
-    return bluebird_1.default.all(tasks);
+    return Promise.all(tasks);
 }
 exports.bundle = bundle;
 function depCache(bundleConfig) {
@@ -44,12 +44,12 @@ function depCache(bundleConfig) {
         }
         tasks.push(bundler.depCache(utils_1.getBundleConfig(cfg, key, config)));
     });
-    return bluebird_1.default.all(tasks);
+    return Promise.all(tasks);
 }
 exports.depCache = depCache;
 function _bundle(bundleCfg, bundleName, config) {
     return bundler.bundle(utils_1.getBundleConfig(bundleCfg, bundleName, config));
 }
-function _bundleHtmlImportTemplate(bundleCfg, bundleName, config) {
-    return hitb.bundle(utils_1.getHtmlImportBundleConfig(bundleCfg, bundleName, config));
+function _bundleHtmlImportTemplate(bundleOpts, bundleName, config) {
+    return hitb.bundle(utils_1.getHtmlImportBundleConfig(bundleOpts, bundleName, config));
 }

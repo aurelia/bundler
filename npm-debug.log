@@ -1,36 +1,36 @@
 0 info it worked if it ends with ok
-1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
-1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli [ '/Users/ahmedshuhel/.nvm/versions/node/v6.7.0/bin/node',
+1 verbose cli   '/Users/ahmedshuhel/.nvm/versions/node/v6.7.0/bin/npm',
 1 verbose cli   'run',
 1 verbose cli   'build' ]
-2 info using npm@3.3.12
-3 info using node@v5.1.0
+2 info using npm@3.10.3
+3 info using node@v6.7.0
 4 verbose run-script [ 'prebuild', 'build', 'postbuild' ]
 5 info lifecycle aurelia-bundler@0.4.0~prebuild: aurelia-bundler@0.4.0
 6 silly lifecycle aurelia-bundler@0.4.0~prebuild: no script for prebuild, continuing
 7 info lifecycle aurelia-bundler@0.4.0~build: aurelia-bundler@0.4.0
 8 verbose lifecycle aurelia-bundler@0.4.0~build: unsafe-perm in lifecycle true
-9 verbose lifecycle aurelia-bundler@0.4.0~build: PATH: C:\Program Files\nodejs\node_modules\npm\bin\node-gyp-bin;C:\Users\Shuhel\Workspace\aurelia\bundler\node_modules\.bin;C:\bin\ruby193\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\ATI Technologies\ATI.ACE\Core-Static;C:\Program Files (x86)\GtkSharp\2.12\bin;C:\Program Files\Microsoft SQL Server\110\Tools\Binn\;C:\Program Files\Microsoft SQL Server\110\DTS\Binn\;C:\Program Files (x86)\Microsoft SQL Server\110\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\110\Tools\Binn\ManagementStudio\;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\PrivateAssemblies\;C:\Program Files (x86)\Microsoft SQL Server\110\DTS\Binn\;C:\Program Files\Microsoft\Web Platform Installer\;C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Pages\v1.0\;C:\Program Files\Microsoft SQL Server\120\Tools\Binn\;C:\tools\php;C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\;C:\Program Files (x86)\Microsoft SDKs\TypeScript\1.0\;C:\Program Files\nodejs\;C:\Program Files (x86)\Skype\Phone\;C:\Program Files\dotnet\bin;C:\Program Files\Git\bin;C:\Program Files (x86)\AMD\ATI.ACE\Core-Static;C:\Program Files\OpenVPN\bin;C:\ProgramData\chocolatey\bin;C:\tools\PhantomJS;C:\tools\sysinternals;C:\tools\hugo;C:\tools\php;C:\Users\Shuhel\AppData\Roaming\Composer\vendor\bin;C:\tools\mysql\current\bin;C:\Users\Shuhel\Workspace\go\bin;C:\tools\cmdermini;C:\Python27;C:\Program Files\kdiff3;C:\tools\nuget;C:\Users\Shuhel\AppData\Local\.meteor\;C:\Program Files (x86)\Microsoft VS Code\bin;C:\Users\Shuhel\AppData\Roaming\npm;C:\Program Files (x86)\Java\jdk1.7.0_71\bin;C:\spark\bin
-10 verbose lifecycle aurelia-bundler@0.4.0~build: CWD: C:\Users\Shuhel\Workspace\aurelia\bundler
-11 silly lifecycle aurelia-bundler@0.4.0~build: Args: [ '/d /s /c', 'npm run build:compile' ]
+9 verbose lifecycle aurelia-bundler@0.4.0~build: PATH: /Users/ahmedshuhel/.nvm/versions/node/v6.7.0/lib/node_modules/npm/bin/node-gyp-bin:/Users/ahmedshuhel/Workspace/aurelia/bundler/node_modules/.bin:/Users/ahmedshuhel/.nvm/versions/node/v6.7.0/bin:/Users/ahmedshuhel/.nvm/versions/node/v6.7.0/bin:/Users/ahmedshuhel/.rvm/gems/ruby-1.9.3-p551/bin:/Users/ahmedshuhel/.rvm/gems/ruby-1.9.3-p551@global/bin:/Users/ahmedshuhel/.rvm/rubies/ruby-1.9.3-p551/bin:/usr/sbin:/sbin:/usr/local/bin:/Users/ahmedshuhel/.rvm/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/share/dotnet:/Users/ahmedshuhel/.rvm/bin
+10 verbose lifecycle aurelia-bundler@0.4.0~build: CWD: /Users/ahmedshuhel/Workspace/aurelia/bundler
+11 silly lifecycle aurelia-bundler@0.4.0~build: Args: [ '-c', 'npm run build:compile' ]
 12 silly lifecycle aurelia-bundler@0.4.0~build: Returned: code: 1  signal: null
 13 info lifecycle aurelia-bundler@0.4.0~build: Failed to exec build script
 14 verbose stack Error: aurelia-bundler@0.4.0 build: `npm run build:compile`
 14 verbose stack Exit status 1
-14 verbose stack     at EventEmitter.<anonymous> (C:\Program Files\nodejs\node_modules\npm\lib\utils\lifecycle.js:232:16)
-14 verbose stack     at emitTwo (events.js:87:13)
-14 verbose stack     at EventEmitter.emit (events.js:172:7)
-14 verbose stack     at ChildProcess.<anonymous> (C:\Program Files\nodejs\node_modules\npm\lib\utils\spawn.js:24:14)
-14 verbose stack     at emitTwo (events.js:87:13)
-14 verbose stack     at ChildProcess.emit (events.js:172:7)
-14 verbose stack     at maybeClose (internal/child_process.js:818:16)
-14 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:211:5)
+14 verbose stack     at EventEmitter.<anonymous> (/Users/ahmedshuhel/.nvm/versions/node/v6.7.0/lib/node_modules/npm/lib/utils/lifecycle.js:242:16)
+14 verbose stack     at emitTwo (events.js:106:13)
+14 verbose stack     at EventEmitter.emit (events.js:191:7)
+14 verbose stack     at ChildProcess.<anonymous> (/Users/ahmedshuhel/.nvm/versions/node/v6.7.0/lib/node_modules/npm/lib/utils/spawn.js:40:14)
+14 verbose stack     at emitTwo (events.js:106:13)
+14 verbose stack     at ChildProcess.emit (events.js:191:7)
+14 verbose stack     at maybeClose (internal/child_process.js:877:16)
+14 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:226:5)
 15 verbose pkgid aurelia-bundler@0.4.0
-16 verbose cwd C:\Users\Shuhel\Workspace\aurelia\bundler
-17 error Windows_NT 10.0.10586
-18 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "run" "build"
-19 error node v5.1.0
-20 error npm  v3.3.12
+16 verbose cwd /Users/ahmedshuhel/Workspace/aurelia/bundler
+17 error Darwin 15.5.0
+18 error argv "/Users/ahmedshuhel/.nvm/versions/node/v6.7.0/bin/node" "/Users/ahmedshuhel/.nvm/versions/node/v6.7.0/bin/npm" "run" "build"
+19 error node v6.7.0
+20 error npm  v3.10.3
 21 error code ELIFECYCLE
 22 error aurelia-bundler@0.4.0 build: `npm run build:compile`
 22 error Exit status 1
@@ -40,7 +40,9 @@
 23 error not with npm itself.
 23 error Tell the author that this fails on your system:
 23 error     npm run build:compile
-23 error You can get their info via:
+23 error You can get information on how to open an issue for this project with:
+23 error     npm bugs aurelia-bundler
+23 error Or if that isn't available, you can get their info via:
 23 error     npm owner ls aurelia-bundler
 23 error There is likely additional logging output above.
 24 verbose exit [ 1, true ]

@@ -1,4 +1,4 @@
-import { Promise } from 'bluebird';
+import * as Promise from 'bluebird';
 import whacko from 'whacko';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -32,15 +32,14 @@ function removeBundles(cfg) {
 }
 
 function removeHtmlImportBundles(config) {
-  let tasks = [];
+  let tasks: Promise[] = [];
 
   Object
     .keys(config.bundles)
     .forEach((key) => {
       let cfg = config.bundles[key];
       if (cfg.htmlimport) {
-        tasks.push(_removeHtmlImportBundle(
-          getHtmlImportBundleConfig(cfg, key, config)));
+        tasks.push(_removeHtmlImportBundle(getHtmlImportBundleConfig(cfg, key, config)));
       }
     });
 

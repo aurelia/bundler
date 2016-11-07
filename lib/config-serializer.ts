@@ -1,11 +1,11 @@
 import * as vm from 'vm';
 import * as fs from 'fs';
 
-interface AppConfig {
+export interface AppConfig {
   baseURL: string;
-  map: {};
-  depCache: {};
-  bundles: {};
+  map: any;
+  depCache: any;
+  bundles: any;
 }
 
 export function readConfig(cfgCode): AppConfig {
@@ -83,7 +83,7 @@ export function serializeConfig(config, isSystemJS) {
 }
 
 export function getAppConfig(configPath) {
-  let configCode = [];
+  let configCode: string[] = [];
 
   if (typeof configPath === 'string') {
     configCode.push(fs.readFileSync(configPath, 'utf8'));
