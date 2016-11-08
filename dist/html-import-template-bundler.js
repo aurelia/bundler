@@ -1,9 +1,9 @@
 "use strict";
 var Promise = require('bluebird');
-var whacko_1 = require('whacko');
+var cheerio = require('cheerio');
 var fs = require('fs');
 var path = require('path');
-var globby_1 = require('globby');
+var globby = require('globby');
 var sysUtils = require('systemjs-builder/lib/utils.js');
 var utils = require('./utils');
 var Builder = require('systemjs-builder');
@@ -28,7 +28,7 @@ function bundle(cfg) {
 exports.bundle = bundle;
 function generateOutput(baseURL, includes, builder) {
     var templates = [];
-    globby_1.default
+    globby
         .sync(includes, {
         cwd: baseURL.replace(/\\/g, '/')
     })
@@ -38,7 +38,7 @@ function generateOutput(baseURL, includes, builder) {
             var content = fs.readFileSync(file, {
                 encoding: 'utf8'
             });
-            var $ = whacko_1.default.load(content);
+            var $ = cheerio.load(content);
             var name = getCanonicalName(builder, file, 'view').replace(/!view$/g, '');
             $('template').attr('id', name);
             var template = $.html('template');
@@ -65,7 +65,7 @@ function addLink(link, indexFile, destFile) {
     var content = fs.readFileSync(indexFile, {
         encoding: 'utf8'
     });
-    var $ = whacko_1.default.load(content);
+    var $ = cheerio.load(content);
     if ($('link[aurelia-view-bundle][href="' + link + '"]').length === 0) {
         $('head').append('<link aurelia-view-bundle rel="import" href="' + link + '">');
     }

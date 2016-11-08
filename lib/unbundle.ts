@@ -46,7 +46,7 @@ function removeHtmlImportBundles(config) {
   return Promise.all(tasks);
 }
 
-function _removeHtmlImportBundle(cfg) {
+function _removeHtmlImportBundle(cfg): Promise<void> {
 
   let file = path.resolve(cfg.baseURL, cfg.options.inject.destFile);
 

@@ -1,8 +1,8 @@
 import * as Promise from 'bluebird';
-import whacko from 'whacko';
+import * as cheerio from 'cheerio';
 import * as fs from 'fs';
 import * as path from 'path';
-import globby from 'globby';
+import * as globby from 'globby';
 import * as sysUtils from 'systemjs-builder/lib/utils.js';
 import * as utils from './utils';
 import * as Builder from 'systemjs-builder';
@@ -44,7 +44,7 @@ export function generateOutput(baseURL, includes, builder) {
         let content = fs.readFileSync(file, {
           encoding: 'utf8'
         });
-        let $ = whacko.load(content);
+        let $ = cheerio.load(content);
         let name = getCanonicalName(builder, file, 'view').replace(/!view$/g, '');
 
         $('template').attr('id', name);
@@ -76,7 +76,7 @@ function addLink(link, indexFile, destFile) {
     encoding: 'utf8'
   });
 
-  let $ = whacko.load(content);
+  let $ = cheerio.load(content);
 
   if ($('link[aurelia-view-bundle][href="' + link + '"]').length === 0) {
     $('head').append('<link aurelia-view-bundle rel="import" href="' + link + '">');

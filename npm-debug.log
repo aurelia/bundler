@@ -1,7 +1,7 @@
 0 info it worked if it ends with ok
 1 verbose cli [ '/Users/ahmedshuhel/.nvm/versions/node/v6.7.0/bin/node',
-1 verbose cli   '/Users/ahmedshuhel/.nvm/versions/node/v6.7.0/bin/npm',
-1 verbose cli   'run',
+1 verbose cli   '/Users/ahmedshuhel/.nvm/versions/node/v6.7.0/lib/node_modules/npm/bin/npm-cli.js',
+1 verbose cli   'run-script',
 1 verbose cli   'build' ]
 2 info using npm@3.10.3
 3 info using node@v6.7.0
@@ -10,7 +10,7 @@
 6 silly lifecycle aurelia-bundler@0.4.0~prebuild: no script for prebuild, continuing
 7 info lifecycle aurelia-bundler@0.4.0~build: aurelia-bundler@0.4.0
 8 verbose lifecycle aurelia-bundler@0.4.0~build: unsafe-perm in lifecycle true
-9 verbose lifecycle aurelia-bundler@0.4.0~build: PATH: /Users/ahmedshuhel/.nvm/versions/node/v6.7.0/lib/node_modules/npm/bin/node-gyp-bin:/Users/ahmedshuhel/Workspace/aurelia/bundler/node_modules/.bin:/Users/ahmedshuhel/.nvm/versions/node/v6.7.0/bin:/Users/ahmedshuhel/.nvm/versions/node/v6.7.0/bin:/Users/ahmedshuhel/.rvm/gems/ruby-1.9.3-p551/bin:/Users/ahmedshuhel/.rvm/gems/ruby-1.9.3-p551@global/bin:/Users/ahmedshuhel/.rvm/rubies/ruby-1.9.3-p551/bin:/usr/sbin:/sbin:/usr/local/bin:/Users/ahmedshuhel/.rvm/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/share/dotnet:/Users/ahmedshuhel/.rvm/bin
+9 verbose lifecycle aurelia-bundler@0.4.0~build: PATH: /Users/ahmedshuhel/.nvm/versions/node/v6.7.0/lib/node_modules/npm/bin/node-gyp-bin:/Users/ahmedshuhel/Workspace/aurelia/bundler/node_modules/.bin:/Users/ahmedshuhel/.nvm/versions/node/v6.7.0/bin:/Users/ahmedshuhel/.nvm/versions/node/v4.2.1/bin:/Users/ahmedshuhel/.rvm/gems/ruby-1.9.3-p551/bin:/Users/ahmedshuhel/.rvm/gems/ruby-1.9.3-p551@global/bin:/Users/ahmedshuhel/.rvm/rubies/ruby-1.9.3-p551/bin:/usr/sbin:/sbin:/usr/local/bin:/Users/ahmedshuhel/.rvm/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/share/dotnet:/Users/ahmedshuhel/.rvm/bin
 10 verbose lifecycle aurelia-bundler@0.4.0~build: CWD: /Users/ahmedshuhel/Workspace/aurelia/bundler
 11 silly lifecycle aurelia-bundler@0.4.0~build: Args: [ '-c', 'npm run build:compile' ]
 12 silly lifecycle aurelia-bundler@0.4.0~build: Returned: code: 1  signal: null
@@ -28,7 +28,7 @@
 15 verbose pkgid aurelia-bundler@0.4.0
 16 verbose cwd /Users/ahmedshuhel/Workspace/aurelia/bundler
 17 error Darwin 15.5.0
-18 error argv "/Users/ahmedshuhel/.nvm/versions/node/v6.7.0/bin/node" "/Users/ahmedshuhel/.nvm/versions/node/v6.7.0/bin/npm" "run" "build"
+18 error argv "/Users/ahmedshuhel/.nvm/versions/node/v6.7.0/bin/node" "/Users/ahmedshuhel/.nvm/versions/node/v6.7.0/lib/node_modules/npm/bin/npm-cli.js" "run-script" "build"
 19 error node v6.7.0
 20 error npm  v3.10.3
 21 error code ELIFECYCLE

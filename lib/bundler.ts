@@ -72,7 +72,7 @@ export function bundle(cfg) {
     tasks.push(_depCache(buildExpression, cfg));
   }
 
-  return Promise.all(tasks);
+  return Promise.all<void>(tasks);
 }
 
 export function depCache(cfg) {

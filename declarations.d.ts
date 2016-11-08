@@ -14,11 +14,26 @@ declare module 'rev-path' {
   export = revPath;
 }
 
-declare var Builder: SystemBuilder.Builder;
-declare var Utils: SystemBuilder.Utils;
+declare module 'globby' {
+  export = globby;
+}
 
 declare function revHash(buf: Buffer): string;
+declare namespace revHash {
+}
+
 declare function revPath(pth: string, hash: string): string;
+declare namespace revPath {
+  export function revert(pth: string, hash: string): string;
+}
+
+declare function globby(pattern: string, opts: any): Promise<string[]>;
+declare namespace globby {
+  export function sync(patterns: string[], opts: {cwd: string}): string[];
+}
+
+declare var Builder: SystemBuilder.Builder;
+declare var Utils: SystemBuilder.Utils;
 
 declare namespace SystemBuilder {
   export interface Builder {
