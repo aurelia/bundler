@@ -5,6 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.bundle = bundle;
 exports.depCache = depCache;
+exports.writeSourcemaps = writeSourcemaps;
 exports.writeOutput = writeOutput;
 exports.injectBundle = injectBundle;
 exports.getFullModuleName = getFullModuleName;
@@ -71,7 +72,7 @@ function createFetchHook(cfg) {
     var address = (0, _utils.fromFileURL)(load.address);
     var ext = _path2.default.extname(address);
 
-    if (ext !== '.html' || ext !== '.css') {
+    if (!(ext === '.html' || ext === '.css')) {
       return fetch(load);
     }
 
@@ -160,7 +161,12 @@ function _bundle(buildExpression, cfg) {
 
   return builder.bundle(buildExpression, cfg.options).then(function (output) {
     var outfile = utils.getOutFileName(output.source, cfg.bundleName + '.js', cfg.options.rev);
-    writeOutput(output, outfile, cfg.baseURL, cfg.force);
+
+    writeOutput(output, outfile, cfg.baseURL, cfg.force, cfg.options.sourceMaps);
+
+    if (cfg.options.sourceMaps) {
+      writeSourcemaps(output, outfile, cfg.baseURL, cfg.force);
+    }
 
     if (cfg.options.inject) {
       injectBundle(builder, output, outfile, cfg);
@@ -170,7 +176,27 @@ function _bundle(buildExpression, cfg) {
   });
 }
 
-function writeOutput(output, outfile, baseURL, force) {
+function writeSourcemaps(output, outfile, baseURL, force) {
+  var outPath = _path2.default.resolve(baseURL, outfile) + '.map';
+
+  if (_fs2.default.existsSync(outPath)) {
+    if (!force) {
+      throw new Error('A source map named \'' + outPath + '\' already exists. Use the --force option to overwrite it.');
+    }
+
+    _fs2.default.unlinkSync(outPath);
+  } else {
+    var dirpath = _path2.default.dirname(outPath);
+
+    if (!_fs2.default.existsSync(dirpath)) {
+      _fs2.default.mkdirSync(dirpath);
+    }
+  }
+
+  _fs2.default.writeFileSync(outPath, output.sourceMap);
+}
+
+function writeOutput(output, outfile, baseURL, force, sourceMaps) {
   var outPath = _path2.default.resolve(baseURL, outfile);
 
   if (_fs2.default.existsSync(outPath)) {
@@ -187,7 +213,14 @@ function writeOutput(output, outfile, baseURL, force) {
     }
   }
 
-  _fs2.default.writeFileSync(outPath, output.source);
+  var source = output.source;
+
+  if (sourceMaps) {
+    var sourceMapFileName = _path2.default.basename(outPath) + '.map';
+    source += '\n//# sourceMappingURL=' + sourceMapFileName;
+  }
+
+  _fs2.default.writeFileSync(outPath, source);
 }
 
 function injectBundle(builder, output, outfile, cfg) {
@@ -204,12 +237,10 @@ function injectBundle(builder, output, outfile, cfg) {
 }
 
 function getFullModuleName(moduleName, map) {
-  var matches = [];
   var cleanName = function cleanName(n) {
     return n.replace(/^.*:/, '').replace(/@.*$/, '');
   };
-
-  matches = Object.keys(map).filter(function (m) {
+  var matches = Object.keys(map).filter(function (m) {
     return m === moduleName;
   });
 

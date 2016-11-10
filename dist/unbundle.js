@@ -13,17 +13,9 @@ var _whacko = require('whacko');
 
 var _whacko2 = _interopRequireDefault(_whacko);
 
-var _lodash = require('lodash');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
 var _fs = require('fs');
 
 var _fs2 = _interopRequireDefault(_fs);
-
-var _utils = require('systemjs-builder/lib/utils');
-
-var _utils2 = _interopRequireDefault(_utils);
 
 var _path = require('path');
 
@@ -31,13 +23,13 @@ var _path2 = _interopRequireDefault(_path);
 
 var _configSerializer = require('./config-serializer');
 
-var _utils3 = require('./utils');
+var _utils = require('./utils');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function unbundle(_config) {
-  var config = (0, _utils3.getCommonConfig)(_config);
-  (0, _utils3.validateConfig)(config);
+  var config = (0, _utils.getCommonConfig)(_config);
+  (0, _utils.validateConfig)(config);
 
   var tasks = [removeBundles(config), removeHtmlImportBundles(config)];
 
@@ -60,7 +52,7 @@ function removeHtmlImportBundles(config) {
   Object.keys(config.bundles).forEach(function (key) {
     var cfg = config.bundles[key];
     if (cfg.htmlimport) {
-      tasks.push(_removeHtmlImportBundle((0, _utils3.getHtmlImportBundleConfig)(cfg, key, config)));
+      tasks.push(_removeHtmlImportBundle((0, _utils.getHtmlImportBundleConfig)(cfg, key, config)));
     }
   });
 

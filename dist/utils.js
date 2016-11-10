@@ -74,7 +74,8 @@ function getHTMLMinOpts(opts) {
     removeStyleLinkTypeAttributes: true,
     caseSensitive: true,
     minifyJS: true,
-    minifyCSS: true
+    minifyCSS: true,
+    removeRedundantAttributes: false
   });
 }
 
@@ -151,6 +152,7 @@ function getDefaultInjectionConfigFilePath(configPath) {
   if (typeof configPath === 'string') {
     return configPath;
   }
+
   if (Array.isArray(configPath)) {
     return configPath[0];
   }

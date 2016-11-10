@@ -4,6 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.bundle = bundle;
+exports.generateOutput = generateOutput;
+exports.getOutputFileName = getOutputFileName;
 
 var _bluebird = require('bluebird');
 
@@ -29,32 +31,46 @@ var _utils = require('systemjs-builder/lib/utils');
 
 var _utils2 = _interopRequireDefault(_utils);
 
+var _utils3 = require('./utils');
+
+var utils = _interopRequireWildcard(_utils3);
+
 var _systemjsBuilder = require('systemjs-builder');
 
 var _systemjsBuilder2 = _interopRequireDefault(_systemjsBuilder);
 
-var _lodash = require('lodash');
-
-var _lodash2 = _interopRequireDefault(_lodash);
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function bundle(cfg) {
+  var baseURL = _path2.default.resolve(cfg.baseURL);
   var builder = new _systemjsBuilder2.default(cfg.baseURL, cfg.configPath);
   builder.config(cfg.builderCfg);
 
-  var templates = [];
-  var baseURL = _path2.default.resolve(cfg.baseURL);
-  var outfile = _path2.default.resolve(baseURL, cfg.bundleName) + '.html';
+  var output = generateOutput(baseURL, cfg.includes, builder);
+  var outputFileName = getOutputFileName(baseURL, cfg.bundleName, output, cfg.options && cfg.options.rev);
 
-  if (_fs2.default.existsSync(outfile)) {
+  if (_fs2.default.existsSync(outputFileName)) {
     if (!cfg.force) {
-      throw new Error('A bundle named \'' + outfile + '\' already exists. Use the --force option to overwrite it.');
+      throw new Error('A bundle named \'' + outputFileName + '\' already exists. Use the --force option to overwrite it.');
     }
-    _fs2.default.unlinkSync(outfile);
+    _fs2.default.unlinkSync(outputFileName);
   }
 
-  _globby2.default.sync(cfg.includes, {
+  _fs2.default.writeFileSync(outputFileName, output);
+
+  if (cfg.options && cfg.options.inject) {
+    injectLink(outputFileName, baseURL, cfg.options.inject);
+  }
+
+  return _bluebird2.default.resolve();
+}
+
+function generateOutput(baseURL, includes, builder) {
+  var templates = [];
+
+  _globby2.default.sync(includes, {
     cwd: baseURL.replace(/\\/g, '/')
   }).forEach(function (file) {
     if (file != '.') {
@@ -62,23 +78,21 @@ function bundle(cfg) {
       var content = _fs2.default.readFileSync(file, {
         encoding: 'utf8'
       });
-
       var $ = _whacko2.default.load(content);
       var name = getCanonicalName(builder, file, 'view').replace(/!view$/g, '');
 
       $('template').attr('id', name);
       var template = $.html('template');
+
       templates.push(template);
     }
   });
+  return templates.join('\n');
+}
 
-  _fs2.default.writeFileSync(outfile, templates.join('\n'));
-
-  if (cfg.options.inject) {
-    injectLink(outfile, baseURL, cfg.options.inject);
-  }
-
-  return _bluebird2.default.resolve();
+function getOutputFileName(baseURL, bundleName, output, rev) {
+  var outFileName = utils.getOutFileName(output, bundleName + '.html', rev);
+  return _path2.default.resolve(baseURL, outFileName);
 }
 
 function injectLink(outfile, baseURL, inject) {
