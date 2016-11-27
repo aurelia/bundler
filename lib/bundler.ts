@@ -83,8 +83,8 @@ export function depCache(cfg) {
 function createBuilder(cfg) {
   let builder = new Builder(cfg.baseURL);
   let appCfg = getAppConfig(cfg.configPath);
-
   delete appCfg.baseURL;
+
   builder.config(appCfg);
   builder.config(cfg.builderCfg);
   return builder;
