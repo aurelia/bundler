@@ -2,7 +2,7 @@
   "extends": "tslint:latest",
   "rules": {
     "no-namespace": false,
-    "quotemark": [true, "single"],
+    "quotemark": [false, "single"],
     "object-literal-shorthand": false,
     "max-line-length": [true, 180],
     "object-literal-key-quotes": false,

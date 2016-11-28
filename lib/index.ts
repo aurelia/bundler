@@ -5,12 +5,12 @@ import {
   getCommonConfig,
   getBundleConfig,
   validateConfig,
-  getHtmlImportBundleConfig
+  getHtmlImportBundleConfig, BundleConfig
 } from './utils';
 
 export * from './unbundle';
 
-export function bundle(bundleConfig) {
+export function bundle(bundleConfig: BundleConfig) {
   let tasks: Promise<void>[] = [];
   let commonCfg = getCommonConfig(bundleConfig);
 
@@ -34,8 +34,8 @@ export function bundle(bundleConfig) {
   return Promise.all(tasks);
 }
 
-export function depCache(bundleConfig) {
-  let tasks = [];
+export function depCache(bundleConfig: BundleConfig) {
+  let tasks: Array<Promise<void>> = [];
   let config = getCommonConfig(bundleConfig);
 
   validateConfig(config);
@@ -63,5 +63,5 @@ function _bundle(bundleCfg, bundleName, config) {
 
 function _bundleHtmlImportTemplate(bundleOpts, bundleName, config) {
   return hitb.bundle(
-     getHtmlImportBundleConfig(bundleOpts, bundleName, config));
+    getHtmlImportBundleConfig(bundleOpts, bundleName, config));
 }

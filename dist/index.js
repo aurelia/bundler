@@ -2,11 +2,11 @@
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
-var Promise = require('bluebird');
-var bundler = require('./bundler');
-var hitb = require('./html-import-template-bundler');
-var utils_1 = require('./utils');
-__export(require('./unbundle'));
+var Promise = require("bluebird");
+var bundler = require("./bundler");
+var hitb = require("./html-import-template-bundler");
+var utils_1 = require("./utils");
+__export(require("./unbundle"));
 function bundle(bundleConfig) {
     var tasks = [];
     var commonCfg = utils_1.getCommonConfig(bundleConfig);

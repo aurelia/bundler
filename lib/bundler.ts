@@ -5,11 +5,12 @@ import * as Builder from 'systemjs-builder';
 import * as path from 'path';
 import * as _ from 'lodash';
 import * as utils from './utils';
-import {getAppConfig, saveAppConfig} from './config-serializer';
+import {getAppConfig, saveAppConfig } from './config-serializer';
 import * as htmlminifier from 'html-minifier';
 import * as CleanCSS from 'clean-css';
+import {BundleOption} from "./utils";
 
-function createBuildExpression(cfg): string {
+function createBuildExpression(cfg: BundleOption): string {
   let appCfg = getAppConfig(cfg.configPath);
   let includeExpression = cfg.includes.map(m => getFullModuleName(m, appCfg.map)).join(' + ');
   let excludeExpression = cfg.excludes.map(m => getFullModuleName(m, appCfg.map)).join(' - ');
@@ -181,8 +182,8 @@ export function injectBundle(builder, output, outfile, cfg) {
   saveAppConfig(configPath, appCfg);
 }
 
-export function getFullModuleName(moduleName, map) {
-  let cleanName = n => n.replace(/^.*:/, '').replace(/@.*$/, '');
+export function getFullModuleName(moduleName: string, map) {
+  let cleanName = (n: string) => n.replace(/^.*:/, '').replace(/@.*$/, '');
   let matches = Object.keys(map).filter(m => m === moduleName);
 
   if (matches.length === 1) {

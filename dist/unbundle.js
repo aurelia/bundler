@@ -1,10 +1,10 @@
 "use strict";
-var Promise = require('bluebird');
-var whacko_1 = require('whacko');
-var fs = require('fs');
-var path = require('path');
-var config_serializer_1 = require('./config-serializer');
-var utils_1 = require('./utils');
+var Promise = require("bluebird");
+var whacko_1 = require("whacko");
+var fs = require("fs");
+var path = require("path");
+var config_serializer_1 = require("./config-serializer");
+var utils_1 = require("./utils");
 function unbundle(cfg) {
     var config = utils_1.getCommonConfig(cfg);
     utils_1.validateConfig(config);

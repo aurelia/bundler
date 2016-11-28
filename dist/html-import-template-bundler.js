@@ -1,12 +1,12 @@
 "use strict";
-var Promise = require('bluebird');
-var cheerio = require('cheerio');
-var fs = require('fs');
-var path = require('path');
-var globby = require('globby');
-var sysUtils = require('systemjs-builder/lib/utils.js');
-var utils = require('./utils');
-var Builder = require('systemjs-builder');
+var Promise = require("bluebird");
+var cheerio = require("cheerio");
+var fs = require("fs");
+var path = require("path");
+var globby = require("globby");
+var sysUtils = require("systemjs-builder/lib/utils.js");
+var utils = require("./utils");
+var Builder = require("systemjs-builder");
 function bundle(cfg) {
     var baseURL = path.resolve(cfg.baseURL);
     var builder = new Builder(cfg.baseURL, cfg.configPath);
@@ -39,8 +39,8 @@ function generateOutput(baseURL, includes, builder) {
                 encoding: 'utf8'
             });
             var $ = cheerio.load(content);
-            var name = getCanonicalName(builder, file, 'view').replace(/!view$/g, '');
-            $('template').attr('id', name);
+            var name_1 = getCanonicalName(builder, file, 'view').replace(/!view$/g, '');
+            $('template').attr('id', name_1);
             var template = $.html('template');
             templates.push(template);
         }

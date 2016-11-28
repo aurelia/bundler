@@ -1,14 +1,14 @@
 "use strict";
-var fs = require('fs');
-var Promise = require('bluebird');
-var sysUtil = require('systemjs-builder/lib/utils.js');
-var Builder = require('systemjs-builder');
-var path = require('path');
-var _ = require('lodash');
-var utils = require('./utils');
-var config_serializer_1 = require('./config-serializer');
-var htmlminifier = require('html-minifier');
-var CleanCSS = require('clean-css');
+var fs = require("fs");
+var Promise = require("bluebird");
+var sysUtil = require("systemjs-builder/lib/utils.js");
+var Builder = require("systemjs-builder");
+var path = require("path");
+var _ = require("lodash");
+var utils = require("./utils");
+var config_serializer_1 = require("./config-serializer");
+var htmlminifier = require("html-minifier");
+var CleanCSS = require("clean-css");
 function createBuildExpression(cfg) {
     var appCfg = config_serializer_1.getAppConfig(cfg.configPath);
     var includeExpression = cfg.includes.map(function (m) { return getFullModuleName(m, appCfg.map); }).join(' + ');

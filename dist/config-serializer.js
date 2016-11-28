@@ -1,6 +1,6 @@
 "use strict";
-var vm = require('vm');
-var fs = require('fs');
+var vm = require("vm");
+var fs = require("fs");
 function readConfig(cfgCode) {
     var cfg = {};
     var configFunc = function (systemCfg) {

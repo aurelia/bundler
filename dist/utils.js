@@ -1,9 +1,9 @@
 "use strict";
-var _ = require('lodash');
-var revPath = require('rev-path');
-var revHash = require('rev-hash');
-var fs = require('fs');
-var path = require('path');
+var _ = require("lodash");
+var revPath = require("rev-path");
+var revHash = require("rev-hash");
+var fs = require("fs");
+var path = require("path");
 function getOutFileName(source, fileName, rev) {
     return rev ? revPath(fileName, revHash(new Buffer(source, 'utf-8'))) : fileName;
 }
