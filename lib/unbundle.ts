@@ -1,15 +1,17 @@
 import * as Promise from 'bluebird';
-import whacko from 'whacko';
+import * as cheerio from 'cheerio';
 import * as fs from 'fs';
 import * as path from 'path';
 import { getAppConfig, saveAppConfig } from './config-serializer';
 import {
   getCommonConfig,
   validateConfig,
-  getHtmlImportBundleConfig
+  getHtmlImportBundleConfig,
+  BaseConfig,
+  BundleConfig
 } from './utils';
 
-export function unbundle(cfg) {
+export function unbundle(cfg: BaseConfig) {
   let config =  getCommonConfig(cfg);
   validateConfig(config);
 
@@ -18,10 +20,10 @@ export function unbundle(cfg) {
     removeHtmlImportBundles(config)
   ];
 
-  return Promise.all(tasks);
+  return Promise.all<void>(tasks);
 }
 
-function removeBundles(cfg) {
+function removeBundles(cfg: BaseConfig) {
   let configPath = cfg.injectionConfigPath;
   let appCfg = getAppConfig(configPath);
   delete appCfg.bundles;
@@ -31,8 +33,8 @@ function removeBundles(cfg) {
   return Promise.resolve();
 }
 
-function removeHtmlImportBundles(config) {
-  let tasks: Promise[] = [];
+function removeHtmlImportBundles(config: BaseConfig) {
+  let tasks: Promise<void>[] = [];
 
   Object
     .keys(config.bundles)
@@ -43,10 +45,10 @@ function removeHtmlImportBundles(config) {
       }
     });
 
-  return Promise.all(tasks);
+  return Promise.all<void>(tasks);
 }
 
-function _removeHtmlImportBundle(cfg): Promise<void> {
+function _removeHtmlImportBundle(cfg: BundleConfig): Promise<void> {
 
   let file = path.resolve(cfg.baseURL, cfg.options.inject.destFile);
 
@@ -55,22 +57,22 @@ function _removeHtmlImportBundle(cfg): Promise<void> {
   }
 
   return Promise
-    .promisify(fs.readFile)(file, {
+    .promisify<string, string, any>(fs.readFile)(file, {
       encoding: 'utf8'
     })
     .then((content) => {
-      let $ = whacko.load(content);
+      let $ = cheerio.load(content);
       return Promise.resolve($);
     })
     .then(($) => {
       return removeLinkInjections($);
     })
     .then(($) => {
-      return Promise.promisify(fs.writeFile)(file, $.html());
+      return Promise.promisify<void, string, string>(fs.writeFile)(file, $.html());
     });
 }
 
-function removeLinkInjections($) {
+function removeLinkInjections($: CheerioStatic) {
   $('link[aurelia-view-bundle]').remove();
   return Promise.resolve($);
 }
