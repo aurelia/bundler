@@ -7,8 +7,6 @@ import {
   ensureDefaults,
   validateConfig,
   getHtmlImportBundleConfig,
-  BaseConfig,
-  BundleConfig
 } from './utils';
 
 export function unbundle(cfg: BaseConfig) {

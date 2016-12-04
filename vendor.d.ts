@@ -1,4 +1,7 @@
+
 declare module 'systemjs-builder' {
+  import * as Promise from 'bluebird';
+
   let Builder: Builder.BuilderConstructor;
   namespace Builder {
     export interface BuilderConstructor {
@@ -16,7 +19,8 @@ declare module 'systemjs-builder' {
 
     export interface Output {
       source: string;
-      sourceMaps: string;
+      sourceMap: string;
+      modules: string[];
     }
   }
   export = Builder;

@@ -1,14 +1,14 @@
 import * as fs from 'fs';
 import * as Promise from 'bluebird';
-import * as sysUtil  from 'systemjs-builder/lib/utils.js';
+import * as sysUtil from 'systemjs-builder/lib/utils.js';
 import * as Builder from 'systemjs-builder';
 import * as path from 'path';
 import * as _ from 'lodash';
 import * as utils from './utils';
-import {getAppConfig, saveAppConfig } from './config-serializer';
+import { getAppConfig, saveAppConfig } from './config-serializer';
 import * as htmlminifier from 'html-minifier';
 import * as CleanCSS from 'clean-css';
-import {BundleConfig, FetchHook} from "./models";
+import { BundleConfig, FetchHook } from "./models";
 
 function createBuildExpression(cfg: BundleConfig) {
   let appCfg = getAppConfig(cfg.configPath);
@@ -80,12 +80,12 @@ export function bundle(cfg: BundleConfig) {
   return Promise.all<void>(tasks);
 }
 
-export function depCache(cfg: BundleConfig) {
+export function depCache(cfg: BundleConfig): Promise<any> {
   let buildExpression = createBuildExpression(cfg);
   return _depCache(buildExpression, cfg);
 }
 
-function createBuilder(cfg) {
+function createBuilder(cfg: BundleConfig) {
   let builder = new Builder(cfg.baseURL);
   let appCfg = getAppConfig(cfg.configPath);
   delete appCfg.baseURL;
@@ -106,14 +106,12 @@ function _depCache(buildExpression: string, cfg: BundleConfig) {
 
       _.assign(dc, depCache);
       appCfg.depCache = dc;
-
       saveAppConfig(configPath, appCfg);
-
       return Promise.resolve();
     });
 }
 
-function _bundle(buildExpression: string, cfg: any) {
+function _bundle(buildExpression: string, cfg: BundleConfig) {
   let builder = createBuilder(cfg);
 
   return builder.bundle(buildExpression, cfg.options)
@@ -130,7 +128,7 @@ function _bundle(buildExpression: string, cfg: any) {
     });
 }
 
-export function writeSourcemaps(output, outfile, baseURL, force) {
+export function writeSourcemaps(output: Builder.Output, outfile: string, baseURL: string, force: boolean) {
   let outPath = path.resolve(baseURL, outfile) + '.map';
 
   if (fs.existsSync(outPath)) {
@@ -149,7 +147,7 @@ export function writeSourcemaps(output, outfile, baseURL, force) {
   fs.writeFileSync(outPath, output.sourceMap);
 }
 
-export function writeOutput(output, outfile, baseURL, force, sourceMaps) {
+export function writeOutput(output: Builder.Output, outfile: string, baseURL: string, force: boolean, sourceMap: string) {
   let outPath = path.resolve(baseURL, outfile);
 
   if (fs.existsSync(outPath)) {
@@ -166,14 +164,14 @@ export function writeOutput(output, outfile, baseURL, force, sourceMaps) {
     }
   }
   let source = output.source;
-  if (sourceMaps) {
+  if (sourceMap) {
     let sourceMapFileName = path.basename(outPath) + '.map';
     source += '\n//# sourceMappingURL=' + sourceMapFileName;
   }
   fs.writeFileSync(outPath, source);
 }
 
-export function injectBundle(builder, output, outfile, cfg) {
+export function injectBundle(builder: Builder.BuilderInstance, output: Builder.Output, outfile: string, cfg: BundleConfig) {
   let configPath = cfg.injectionConfigPath;
   let bundleName = builder.getCanonicalName(sysUtil.toFileURL(path.resolve(cfg.baseURL, outfile)));
   let appCfg = getAppConfig(configPath);
@@ -186,7 +184,7 @@ export function injectBundle(builder, output, outfile, cfg) {
   saveAppConfig(configPath, appCfg);
 }
 
-export function getFullModuleName(moduleName: string, map) {
+export function getFullModuleName(moduleName: string, map: any) {
   let cleanName = (n: string) => n.replace(/^.*:/, '').replace(/@.*$/, '');
   let matches = Object.keys(map).filter(m => m === moduleName);
 

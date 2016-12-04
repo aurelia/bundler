@@ -33,7 +33,7 @@ export function bundle(_config: Config) {
 }
 
 export function depCache(bundleConfig: Config) {
-  let tasks: Promise<void>[] = [];
+  let tasks: Promise<any>[] = [];
   let config = ensureDefaults(bundleConfig);
   validateConfig(config);
 
