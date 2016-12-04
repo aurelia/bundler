@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { getAppConfig, saveAppConfig } from './config-serializer';
 import {
-  getCommonConfig,
+  ensureDefaults,
   validateConfig,
   getHtmlImportBundleConfig,
   BaseConfig,
@@ -12,7 +12,7 @@ import {
 } from './utils';
 
 export function unbundle(cfg: BaseConfig) {
-  let config =  getCommonConfig(cfg);
+  let config =  ensureDefaults(cfg);
   validateConfig(config);
 
   let tasks = [

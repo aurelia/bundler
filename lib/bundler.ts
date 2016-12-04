@@ -8,22 +8,26 @@ import * as utils from './utils';
 import {getAppConfig, saveAppConfig } from './config-serializer';
 import * as htmlminifier from 'html-minifier';
 import * as CleanCSS from 'clean-css';
-import {BundleOption} from "./utils";
+import {BundleConfig, FetchHook} from "./models";
 
-function createBuildExpression(cfg: BundleOption): string {
+function createBuildExpression(cfg: BundleConfig) {
   let appCfg = getAppConfig(cfg.configPath);
-  let includeExpression = cfg.includes.map(m => getFullModuleName(m, appCfg.map)).join(' + ');
-  let excludeExpression = cfg.excludes.map(m => getFullModuleName(m, appCfg.map)).join(' - ');
+  let includes = cfg.includes as string[];
+  let excludes = cfg.excludes;
+
+  let includeExpression = includes.map(m => getFullModuleName(m, appCfg.map)).join(' + ');
+  let excludeExpression = excludes.map(m => getFullModuleName(m, appCfg.map)).join(' - ');
   let buildExpression = includeExpression;
 
   if (excludeExpression && excludeExpression.length > 0) {
     buildExpression = `${buildExpression} - ${excludeExpression}`;
   }
+
   return buildExpression;
 }
 
-function createFetchHook(cfg) {
-  return (load, fetch) => {
+function createFetchHook(cfg: BundleConfig): FetchHook {
+  return (load: any, fetch: (load: any) => any): string | any => {
     let address = sysUtil.fromFileURL(load.address);
     let ext = path.extname(address);
 
@@ -61,7 +65,7 @@ function createFetchHook(cfg) {
   };
 }
 
-export function bundle(cfg) {
+export function bundle(cfg: BundleConfig) {
   let buildExpression = createBuildExpression(cfg);
   cfg.options.fetch = createFetchHook(cfg);
 
@@ -76,7 +80,7 @@ export function bundle(cfg) {
   return Promise.all<void>(tasks);
 }
 
-export function depCache(cfg) {
+export function depCache(cfg: BundleConfig) {
   let buildExpression = createBuildExpression(cfg);
   return _depCache(buildExpression, cfg);
 }
@@ -91,7 +95,7 @@ function createBuilder(cfg) {
   return builder;
 }
 
-function _depCache(buildExpression, cfg) {
+function _depCache(buildExpression: string, cfg: BundleConfig) {
   let builder = createBuilder(cfg);
   return builder.trace(buildExpression, cfg.options)
     .then(tree => {

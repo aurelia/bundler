@@ -1,43 +1,40 @@
 import * as Promise from 'bluebird';
 import * as bundler from './bundler';
 import * as hitb from './html-import-template-bundler';
+import {BundleConfig, Config, ConfigBody} from './models';
 import {
-  getCommonConfig,
+  ensureDefaults,
   getBundleConfig,
   validateConfig,
-  getHtmlImportBundleConfig, BundleConfig
+  getHtmlImportBundleConfig, 
 } from './utils';
 
 export * from './unbundle';
 
-export function bundle(bundleConfig: BundleConfig) {
+export function bundle(_config: Config) {
   let tasks: Promise<void>[] = [];
-  let commonCfg = getCommonConfig(bundleConfig);
+  let config = ensureDefaults(_config);
+  validateConfig(config);
 
-  validateConfig(commonCfg);
-
-  let bundles = commonCfg.bundles;
-  Object.keys(bundles)
+  Object.keys(config.bundles)
     .forEach(key => {
-      let cfg = bundles[key];
+      let cfg = config.bundles[key];
       if (cfg.skip) {
         return;
       }
-
       if (cfg.htmlimport) {
-        tasks.push(_bundleHtmlImportTemplate(cfg, key, commonCfg));
+        tasks.push(hitb.bundle(getHtmlImportBundleConfig(cfg, key, config)));
       } else {
-        tasks.push(_bundle(cfg, key, commonCfg));
+        tasks.push(bundler.bundle(getBundleConfig(cfg, key, config)));
       }
     });
 
   return Promise.all(tasks);
 }
 
-export function depCache(bundleConfig: BundleConfig) {
-  let tasks: Array<Promise<void>> = [];
-  let config = getCommonConfig(bundleConfig);
-
+export function depCache(bundleConfig: Config) {
+  let tasks: Promise<void>[] = [];
+  let config = ensureDefaults(bundleConfig);
   validateConfig(config);
 
   let bundles = config.bundles;
@@ -55,13 +52,4 @@ export function depCache(bundleConfig: BundleConfig) {
     });
 
   return Promise.all(tasks);
-}
-
-function _bundle(bundleCfg, bundleName, config) {
-  return bundler.bundle(getBundleConfig(bundleCfg, bundleName, config));
-}
-
-function _bundleHtmlImportTemplate(bundleOpts, bundleName, config) {
-  return hitb.bundle(
-    getHtmlImportBundleConfig(bundleOpts, bundleName, config));
 }

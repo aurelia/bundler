@@ -3,42 +3,13 @@ import * as revPath from 'rev-path';
 import * as revHash from 'rev-hash';
 import * as fs from 'fs';
 import * as path from 'path';
-
-export interface Config {
-  skip?: boolean;
-  htmlimport?: boolean;
-  bundleName?: string;
-  includes: string[] | string;
-  excludes?: string[];
-  injectionConfigPath?: string;
-  options: {
-    inject: boolean | {
-      indexFile: string,
-      destFile: string
-    },
-    minify: boolean,
-    htmlminopts?: any,
-    cssminopts?: any,
-    rev?: boolean,
-  };
-}
-
-export interface BaseConfig {
-  force?: boolean;
-  baseURL: string;
-  configPath: string | string[];
-  injectionConfigPath?: string;
-  bundles: {[name: string]: Config};
-  builderCfg?: any;
-}
-
-export type BundleConfig = BaseConfig & Config;
+import {Config, BundleConfig, ConfigBody, ConfigHeader} from './models';
 
 export function getOutFileName(source: string, fileName: string, rev: string) {
   return rev ? revPath(fileName, revHash(new Buffer(source, 'utf-8'))) : fileName;
 }
 
-export function validateConfig(config: BaseConfig) {
+export function validateConfig(config: Config) {
   if (!fs.existsSync(config.baseURL)) {
     throw new Error(
       `Path '${path.resolve(config.baseURL)}' does not exist. Please provide a valid 'baseURL' in your bundle configuration.`);
@@ -89,8 +60,8 @@ export function getCSSMinOpts(opts: any) {
   });
 }
 
-export function getBundleConfig(bundleCfg: Config, bundleName: string, config: BaseConfig) {
-  return _.defaultsDeep<Config, BundleConfig>(bundleCfg, {
+export function getBundleConfig(bundleCfg: ConfigBody, bundleName: string, config: Config) {
+  return _.defaultsDeep<ConfigBody, BundleConfig>(bundleCfg, {
     baseURL: config.baseURL,
     builderCfg: config.builderCfg,
     bundleName: bundleName,
@@ -100,6 +71,7 @@ export function getBundleConfig(bundleCfg: Config, bundleName: string, config: B
     injectionConfigPath: config.injectionConfigPath,
     force: config.force,
     options: {
+      depCache: false,
       cssminopts: {},
       htmlminopts: {},
       inject: true,
@@ -109,8 +81,8 @@ export function getBundleConfig(bundleCfg: Config, bundleName: string, config: B
   });
 }
 
-export function getHtmlImportBundleConfig(bundleCfg: Config, bundleName: string, config: BaseConfig) {
-  let cfg = _.defaultsDeep<Config, BundleConfig>(bundleCfg, {
+export function getHtmlImportBundleConfig(bundleCfg: ConfigBody, bundleName: string, config: ConfigHeader) {
+  let cfg = _.defaultsDeep<ConfigBody, BundleConfig>(bundleCfg, {
     htmlimport: true,
     includes: '*.html',
     bundleName: bundleName,
@@ -140,8 +112,8 @@ export function getHtmlImportBundleConfig(bundleCfg: Config, bundleName: string,
   return cfg;
 }
 
-export function getCommonConfig(config: BaseConfig) {
-  return _.defaults(config, {
+export function ensureDefaults(config: Config) {
+  return _.defaults<Config>(config, {
     baseURL: '.',
     builderCfg: {},
     bundles: {},
