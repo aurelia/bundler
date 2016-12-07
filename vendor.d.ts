@@ -13,7 +13,7 @@ declare module 'systemjs-builder' {
       bundle(expressionOrTree: string | any, opts: any): Promise<Output>;
       trace(expressionOrTree: string | any, opts: any): Promise<any>;
       getDepCache(tree: any): any;
-      getCanonicalName(): string;
+      getCanonicalName(fileUrl: string): string;
       config(config: any, saveForReset?: boolean, ignoreBaseURL?: boolean): void;
     }
 
