@@ -1,6 +1,6 @@
 export type FetchHook = (load: any, fetch: (load: any) => any) => void;
 
-export interface ConfigBody {
+export type ConfigBody = {
   skip?: boolean;
   htmlimport?: boolean;
   bundleName?: string;
@@ -12,6 +12,7 @@ export interface ConfigBody {
       indexFile: string,
       destFile: string
     },
+    sourceMaps: boolean,
     depCache: boolean,
     minify: boolean,
     htmlminopts?: any,
@@ -21,7 +22,7 @@ export interface ConfigBody {
   };
 }
 
-export interface ConfigHeader {
+export type  ConfigHeader = {
   force?: boolean;
   baseURL: string;
   configPath: string | string[];
@@ -31,4 +32,4 @@ export interface ConfigHeader {
 
 export type BundleConfig = ConfigHeader & ConfigBody & { bundleName: string };
 
-export type Config = ConfigHeader  & { bundles: {[name: string]: ConfigBody }}
+export type Config = ConfigHeader  & { bundles: {[name: string]: ConfigBody }};
