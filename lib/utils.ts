@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import {Config, BundleConfig, ConfigBody, ConfigHeader} from './models';
 
-export function getOutFileName(source: string, fileName: string, rev: string) {
+export function getOutFileName(source: string, fileName: string, rev: boolean) {
   return rev ? revPath(fileName, revHash(new Buffer(source, 'utf-8'))) : fileName;
 }
 
