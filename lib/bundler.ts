@@ -116,10 +116,10 @@ function _bundle(buildExpression: string, cfg: BundleConfig) {
 
   return builder.bundle(buildExpression, cfg.options)
     .then((output) => {
-      let outfile = utils.getOutFileName(output.source, cfg.bundleName + '.js', cfg.options.rev);
-      writeOutput(output, outfile, cfg.baseURL, cfg.force, cfg.options.sourceMaps);
+      let outfile = utils.getOutFileName(output.source, cfg.bundleName + '.js', cfg.options.rev as boolean);
+      writeOutput(output, outfile, cfg.baseURL, cfg.force as boolean, cfg.options.sourceMaps);
       if (cfg.options.sourceMaps) {
-        writeSourcemaps(output, outfile, cfg.baseURL, cfg.force);
+        writeSourcemaps(output, outfile, cfg.baseURL, cfg.force as boolean);
       }
       if (cfg.options.inject) {
         injectBundle(builder, output, outfile, cfg);
@@ -147,7 +147,7 @@ export function writeSourcemaps(output: Builder.Output, outfile: string, baseURL
   fs.writeFileSync(outPath, output.sourceMap);
 }
 
-export function writeOutput(output: Builder.Output, outfile: string, baseURL: string, force: boolean, sourceMap: string) {
+export function writeOutput(output: Builder.Output, outfile: string, baseURL: string, force: boolean, sourceMap: boolean) {
   let outPath = path.resolve(baseURL, outfile);
 
   if (fs.existsSync(outPath)) {
