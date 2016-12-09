@@ -1,8 +1,9 @@
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import expect from 'expect';
-import bundler from '../lib/bundler';
-import sysUtil from 'systemjs-builder/lib/utils.js';
+import * as bundler from '../lib/bundler';
+import * as sysUtil from 'systemjs-builder/lib/utils.js';
+import {BundleConfig} from '../lib/models';
 import * as sinon from 'sinon';
 
 describe('inject bundle', () => {
@@ -12,7 +13,8 @@ describe('inject bundle', () => {
     let saveAppConfigSpy = sinon.spy(bundler, 'saveAppConfig');
     sinon.stub(bundler, 'getAppConfig').returnValue(appCfg);
     sinon.stub(sysUtil, 'toFileURL');
-    let cfg = {
+
+    let cfg: BundleConfig = {
       baseURL: '',
       options: {
         injectionConfigPath: configPath

@@ -77,7 +77,7 @@ export function bundle(cfg: BundleConfig) {
     tasks.push(_depCache(buildExpression, cfg));
   }
 
-  return Promise.all<void>(tasks);
+  return Promise.all<any>(tasks);
 }
 
 export function depCache(cfg: BundleConfig): Promise<any> {
@@ -100,7 +100,7 @@ function _depCache(buildExpression: string, cfg: BundleConfig) {
   return builder.trace(buildExpression, cfg.options)
     .then(tree => {
       let depCache = builder.getDepCache(tree);
-      let configPath = cfg.injectionConfigPath;
+      let configPath = cfg.injectionConfigPath as string;
       let appCfg = getAppConfig(configPath);
       let dc = appCfg.depCache || {};
 
@@ -172,7 +172,7 @@ export function writeOutput(output: Builder.Output, outfile: string, baseURL: st
 }
 
 export function injectBundle(builder: Builder.BuilderInstance, output: Builder.Output, outfile: string, cfg: BundleConfig) {
-  let configPath = cfg.injectionConfigPath;
+  let configPath = cfg.injectionConfigPath as string;
   let bundleName = builder.getCanonicalName(sysUtil.toFileURL(path.resolve(cfg.baseURL, outfile)));
   let appCfg = getAppConfig(configPath);
 

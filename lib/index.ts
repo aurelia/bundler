@@ -1,7 +1,7 @@
 import * as Promise from 'bluebird';
 import * as bundler from './bundler';
 import * as hitb from './html-import-template-bundler';
-import {BundleConfig, Config, ConfigBody} from './models';
+import { Config }  from './models';
 import {
   ensureDefaults,
   getBundleConfig,
@@ -12,7 +12,7 @@ import {
 export * from './unbundle';
 
 export function bundle(_config: Config) {
-  let tasks: Promise<void>[] = [];
+  let tasks: Promise<any>[] = [];
   let config = ensureDefaults(_config);
   validateConfig(config);
 

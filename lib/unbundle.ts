@@ -3,13 +3,14 @@ import * as cheerio from 'cheerio';
 import * as fs from 'fs';
 import * as path from 'path';
 import { getAppConfig, saveAppConfig } from './config-serializer';
+import {Config, BundleConfig, Inject} from './models';
 import {
   ensureDefaults,
   validateConfig,
   getHtmlImportBundleConfig,
 } from './utils';
 
-export function unbundle(cfg: BaseConfig) {
+export function unbundle(cfg: Config) {
   let config =  ensureDefaults(cfg);
   validateConfig(config);
 
@@ -18,22 +19,21 @@ export function unbundle(cfg: BaseConfig) {
     removeHtmlImportBundles(config)
   ];
 
-  return Promise.all<void>(tasks);
+  return Promise.all<any>(tasks);
 }
 
-function removeBundles(cfg: BaseConfig) {
+function removeBundles(cfg: Config) {
   let configPath = cfg.injectionConfigPath;
-  let appCfg = getAppConfig(configPath);
+  let appCfg = getAppConfig(configPath as string);
   delete appCfg.bundles;
   delete appCfg.depCache;
-  saveAppConfig(configPath, appCfg);
+  saveAppConfig(configPath as string, appCfg);
 
   return Promise.resolve();
 }
 
-function removeHtmlImportBundles(config: BaseConfig) {
-  let tasks: Promise<void>[] = [];
-
+function removeHtmlImportBundles(config: Config) {
+  let tasks: Promise<any>[] = [];
   Object
     .keys(config.bundles)
     .forEach((key) => {
@@ -43,12 +43,12 @@ function removeHtmlImportBundles(config: BaseConfig) {
       }
     });
 
-  return Promise.all<void>(tasks);
+  return Promise.all<any>(tasks);
 }
 
-function _removeHtmlImportBundle(cfg: BundleConfig): Promise<void> {
-
-  let file = path.resolve(cfg.baseURL, cfg.options.inject.destFile);
+function _removeHtmlImportBundle(cfg: BundleConfig) {
+  let inject =  cfg.options.inject as Inject;
+  let file = path.resolve(cfg.baseURL, inject.destFile);
 
   if (!fs.existsSync(file)) {
     return Promise.resolve();

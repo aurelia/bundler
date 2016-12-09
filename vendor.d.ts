@@ -1,4 +1,3 @@
-
 declare module 'systemjs-builder' {
   import * as Promise from 'bluebird';
 

@@ -6,14 +6,15 @@ import * as globby from 'globby';
 import * as sysUtils from 'systemjs-builder/lib/utils.js';
 import * as utils from './utils';
 import * as Builder from 'systemjs-builder';
+import {BundleConfig, Inject} from './models';
 
-export function bundle(cfg) {
+export function bundle(cfg: BundleConfig) {
   let baseURL = path.resolve(cfg.baseURL);
   let builder = new Builder(cfg.baseURL, cfg.configPath);
   builder.config(cfg.builderCfg);
 
-  let output = generateOutput(baseURL, cfg.includes, builder);
-  let outputFileName = getOutputFileName(baseURL, cfg.bundleName, output, cfg.options && cfg.options.rev);
+  let output = generateOutput(baseURL, cfg.includes as string[], builder);
+  let outputFileName = getOutputFileName(baseURL, cfg.bundleName, output, (cfg.options && cfg.options.rev) as boolean);
 
   if (fs.existsSync(outputFileName)) {
     if (!cfg.force) {
@@ -25,13 +26,13 @@ export function bundle(cfg) {
   fs.writeFileSync(outputFileName, output);
 
   if (cfg.options && cfg.options.inject) {
-    injectLink(outputFileName, baseURL, cfg.options.inject);
+    injectLink(outputFileName, baseURL, cfg.options.inject as Inject);
   }
 
   return Promise.resolve();
 }
 
-export function generateOutput(baseURL, includes, builder) {
+export function generateOutput(baseURL: string, includes: string[], builder: Builder.BuilderInstance) {
   let templates: string[] = [];
 
   globby
@@ -56,22 +57,21 @@ export function generateOutput(baseURL, includes, builder) {
   return templates.join('\n');
 }
 
-export function getOutputFileName(baseURL, bundleName, output, rev) {
+export function getOutputFileName(baseURL: string, bundleName: string, output: string, rev: boolean) {
   let outFileName = utils.getOutFileName(output, bundleName + '.html', rev);
   return path.resolve(baseURL, outFileName);
 }
 
-function injectLink(outfile, baseURL, inject) {
+function injectLink(outfile: string, baseURL: string, inject: Inject) {
   let bundleFile = path.resolve(baseURL, path.relative(baseURL, outfile));
   let indexFile = path.resolve(baseURL, inject.indexFile);
   let destFile = path.resolve(baseURL, inject.destFile);
   let relPath = path.relative(path.dirname(indexFile), path.dirname(bundleFile)).replace(/\\/g, '/');
-
   let link = createLink(bundleFile, relPath);
   addLink(link, indexFile, destFile);
 }
 
-function addLink(link, indexFile, destFile) {
+function addLink(link: string, indexFile: string, destFile: string) {
   let content = fs.readFileSync(indexFile, {
     encoding: 'utf8'
   });
@@ -85,7 +85,7 @@ function addLink(link, indexFile, destFile) {
   fs.writeFileSync(destFile, $.html());
 }
 
-function createLink(bundleFile, relPath) {
+function createLink(bundleFile: string, relPath: string) {
   if (!relPath.startsWith('.')) {
     return relPath ? './' + relPath + '/' + path.basename(bundleFile) : './' + path.basename(bundleFile);
   } else {
@@ -93,6 +93,6 @@ function createLink(bundleFile, relPath) {
   }
 }
 
-function getCanonicalName(builder, file, pluginName) {
+function getCanonicalName(builder: Builder.BuilderInstance, file: string, pluginName: string) {
   return builder.getCanonicalName(sysUtils.toFileURL(file) + '!' + pluginName);
 }

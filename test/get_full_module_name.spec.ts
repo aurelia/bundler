@@ -1,5 +1,5 @@
 import  expect  from 'expect';
-import { getFullModuleName } from 'bundler';
+import { getFullModuleName } from '../lib/bundler';
 import  config  from './config';
 
 describe('getFullModuleName', () => {

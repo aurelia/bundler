@@ -4,7 +4,7 @@ import {
   isSystemJS,
   readConfig,
   serializeConfig
-} from '../lib/config-serializer.ts';
+} from '../lib/config-serializer';
 
 describe('Config Serializer', () => {
   let inpCfg = 'System.config({ defaultJSExtensions: true })';
@@ -22,10 +22,10 @@ describe('Config Serializer', () => {
 
   it('reads config from multiple files', () => {
     let inpCfg = 'System.config({ defaultJSExtensions: true })';
-    let inpCfg2 = 'System.config({ valueFrom2ndFile : true })';
+    let inpCfg2 = 'System.config({ baseURL : "abc" })';
     let cfg = readConfig([inpCfg, inpCfg2]);
     expect(cfg.defaultJSExtensions).toBeTruthy();
-    expect(cfg.valueFrom2ndFile).toBeTruthy();
+    expect(cfg.baseURL).toBe('abc');
   });
 
   it('can serialize updated configuration', () => {
@@ -82,6 +82,7 @@ describe('Config Serializer', () => {
   it('does not quote top-level keys', () => {
     let cfg = {
       defaultJSExtensions: true,
+      baseURL: '',
       bundles: {
         'app-bundle.js': [
           'app/boot',
@@ -98,6 +99,7 @@ describe('Config Serializer', () => {
     let out =
       `System.config({
   defaultJSExtensions: true,
+  baseURL: "",
   bundles: {
     "app-bundle.js": [
       "app/boot",

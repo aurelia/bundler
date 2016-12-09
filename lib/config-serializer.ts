@@ -1,22 +1,19 @@
 import * as vm from 'vm';
 import * as fs from 'fs';
+import {SystemConfig} from './models';
 
-export interface AppConfig {
-  baseURL: string;
-  map: any;
-  depCache: any;
-  bundles: any;
-}
 
-export function readConfig(cfgCode): AppConfig {
-  let cfg = {};
-  let configFunc = (systemCfg) => {
+export function readConfig(cfgCode: string[]) {
+  let cfg:any = {};
+
+  let configFunc = (systemCfg: any) => {
     for (let key in systemCfg) {
       if (systemCfg.hasOwnProperty(key)) {
         cfg[key] = systemCfg[key];
       }
     }
   };
+
   let sandbox = {
     System: {
       config: configFunc
@@ -29,10 +26,11 @@ export function readConfig(cfgCode): AppConfig {
   cfgCode.forEach(c => {
     vm.runInContext(c, sandbox);
   });
-  return cfg as AppConfig;
+
+  return cfg as SystemConfig;
 }
 
-export function isSystemJS(cfgCode) {
+export function isSystemJS(cfgCode: string) {
   let res = false;
   let sandbox = {
     SystemJS: {
@@ -51,7 +49,7 @@ export function isSystemJS(cfgCode) {
   return res;
 }
 
-export function isSystem(cfgCode) {
+export function isSystem(cfgCode: string) {
   let res = false;
   let sandbox = {
     System: {
@@ -71,7 +69,7 @@ export function isSystem(cfgCode) {
   return res;
 }
 
-export function serializeConfig(config, isSystemJS) {
+export function serializeConfig(config: SystemConfig, isSystemJS: boolean = false) {
   let tab = '  ';
   let json = JSON.stringify(config, null, 2)
     .replace(new RegExp('^' + tab + '"(\\w+)"', 'mg'), tab + '$1');
@@ -82,7 +80,7 @@ export function serializeConfig(config, isSystemJS) {
   return `System.config(${json});`;
 }
 
-export function getAppConfig(configPath) {
+export function getAppConfig(configPath: string | string[]) {
   let configCode: string[] = [];
 
   if (typeof configPath === 'string') {
@@ -103,6 +101,6 @@ export function getAppConfig(configPath) {
   return appCfg;
 }
 
-export function saveAppConfig(configPath, config) {
+export function saveAppConfig(configPath: string, config: SystemConfig) {
   fs.writeFileSync(configPath, serializeConfig(config, isSystemJS(fs.readFileSync(configPath, 'utf8'))));
 }

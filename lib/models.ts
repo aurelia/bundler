@@ -1,17 +1,15 @@
 export type FetchHook = (load: any, fetch: (load: any) => any) => void;
+export type Inject = { indexFile: string, destFile: string };
+
 
 export type ConfigBody = {
   skip?: boolean;
   htmlimport?: boolean;
-  bundleName?: string;
   includes: string[] | string;
   excludes: string[];
   injectionConfigPath?: string;
   options: {
-    inject: boolean | {
-      indexFile: string,
-      destFile: string
-    },
+    inject: boolean | Inject
     sourceMaps: boolean,
     depCache: boolean,
     minify: boolean,
@@ -20,7 +18,7 @@ export type ConfigBody = {
     rev?: boolean,
     fetch: FetchHook
   };
-}
+};
 
 export type  ConfigHeader = {
   force?: boolean;
@@ -28,8 +26,16 @@ export type  ConfigHeader = {
   configPath: string | string[];
   injectionConfigPath?: string;
   builderCfg?: any;
-}
+};
+
+export type Config = ConfigHeader  & { bundles: {[name: string]: ConfigBody }};
 
 export type BundleConfig = ConfigHeader & ConfigBody & { bundleName: string };
 
-export type Config = ConfigHeader  & { bundles: {[name: string]: ConfigBody }};
+export interface SystemConfig {
+  defaultJSExtensions:boolean;
+  baseURL: string;
+  map: any;
+  depCache: any;
+  bundles: any;
+};
