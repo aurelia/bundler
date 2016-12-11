@@ -23,8 +23,8 @@
   },
   "scripts": {
     "lint": "tslint --project tsconfig.json",
-    "pretest": "tsc 'test/*spec.ts' --module commonjs",
-    "test": "mocha",
+    "pretest": "rimraf tb/** && tsc --project tsconfig.json --outDir tb  --module commonjs",
+    "test": "mocha tb/test",
     "prebuild:compile": "rimraf 'dist/**'",
     "build:compile": "tsc --project tsconfig.json --outDir dist --module commonjs",
     "build": "npm run build:compile"
@@ -58,6 +58,7 @@
     "mocha": "^2.4.5",
     "rimraf": "^2.5.4",
     "sinon": "^1.17.6",
+    "ts-node": "^1.7.2",
     "tslint": "^3.15.1",
     "typescript": "^2.0.7"
   }

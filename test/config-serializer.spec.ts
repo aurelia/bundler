@@ -15,8 +15,8 @@ describe('Config Serializer', () => {
   });
 
   it('can read configuration from SystemJS', () => {
-    let SystemJSCfg = 'SystemJS.config({ defaultJSExtensions: true })';
-    let cfg = readConfig([SystemJSCfg]);
+    let systemJSCfg = 'SystemJS.config({ defaultJSExtensions: true })';
+    let cfg = readConfig([systemJSCfg]);
     expect(cfg.defaultJSExtensions).toBeTruthy();
   });
 

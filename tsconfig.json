@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "module": "commonjs",
     "moduleResolution": "node",
     "target": "es5",
@@ -26,7 +27,6 @@
     ".vscode",
     "dist",
     "doc",
-    "node_modules",
-    "test"
+    "node_modules"
   ]
 }
