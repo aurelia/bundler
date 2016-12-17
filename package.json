@@ -23,8 +23,7 @@
   },
   "scripts": {
     "lint": "tslint --project tsconfig.json",
-    "pretest": "rimraf tb/** && tsc --project tsconfig.json --outDir tb  --module commonjs",
-    "test": "mocha tb/test",
+    "test": "mocha -r ts-node/register",
     "prebuild:compile": "rimraf 'dist/**'",
     "build:compile": "tsc --project tsconfig.json --outDir dist --module commonjs",
     "build": "npm run build:compile"
@@ -43,6 +42,7 @@
   },
   "devDependencies": {
     "@types/bluebird": "^3.0.35",
+    "@types/chai": "^3.4.34",
     "@types/cheerio": "^0.17.31",
     "@types/clean-css": "^3.4.30",
     "@types/expect": "^1.13.30",
@@ -52,14 +52,17 @@
     "@types/mocha": "^2.2.32",
     "@types/node": "^6.0.51",
     "@types/sinon": "^1.16.31",
+    "@types/sinon-chai": "^2.7.27",
+    "chai": "^3.5.0",
     "cross-env": "^3.1.3",
     "eslint": "^3.8.1",
     "expect": "^1.19.0",
     "mocha": "^2.4.5",
     "rimraf": "^2.5.4",
     "sinon": "^1.17.6",
+    "sinon-chai": "^2.8.0",
     "ts-node": "^1.7.2",
     "tslint": "^3.15.1",
-    "typescript": "^2.0.7"
+    "typescript": "^2.1.4"
   }
 }
