@@ -34,7 +34,6 @@ export function bundle(cfg: BundleConfig) {
 
 export function generateOutput(baseURL: string, includes: string[], builder: Builder.BuilderInstance) {
   let templates: string[] = [];
-
   globby
     .sync(includes, {
       cwd: baseURL.replace(/\\/g, '/')

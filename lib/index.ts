@@ -6,7 +6,7 @@ import {
   ensureDefaults,
   getBundleConfig,
   validateConfig,
-  getHtmlImportBundleConfig, 
+  getHtmlImportBundleConfig,
 } from './utils';
 
 export * from './unbundle';
