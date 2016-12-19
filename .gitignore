@@ -3,5 +3,4 @@ node_modules
 .idea
 .DS_STORE
 build/reports
-dist/
 .log
