@@ -11,9 +11,9 @@ import {
 
 export * from './unbundle';
 
-export function bundle(_config: Config) {
+export function bundle(inpConfig: Config) {
   let tasks: Promise<any>[] = [];
-  let config = ensureDefaults(_config);
+  let config = ensureDefaults(inpConfig);
   validateConfig(config);
 
   Object.keys(config.bundles)

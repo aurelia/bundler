@@ -1,4 +1,4 @@
-import expect from 'expect';
+import { expect } from 'chai';
 import {
   isSystem,
   isSystemJS,
@@ -11,21 +11,21 @@ describe('Config Serializer', () => {
 
   it('reads configuration from the config file', () => {
     let cfg = readConfig([inpCfg]);
-    expect(cfg.defaultJSExtensions).toBeTruthy();
+    expect(cfg.defaultJSExtensions).to.be.true;
   });
 
   it('can read configuration from SystemJS', () => {
     let systemJSCfg = 'SystemJS.config({ defaultJSExtensions: true })';
     let cfg = readConfig([systemJSCfg]);
-    expect(cfg.defaultJSExtensions).toBeTruthy();
+    expect(cfg.defaultJSExtensions).to.be.true;
   });
 
   it('reads config from multiple files', () => {
     let inpCfg = 'System.config({ defaultJSExtensions: true })';
     let inpCfg2 = 'System.config({ baseURL : "abc" })';
     let cfg = readConfig([inpCfg, inpCfg2]);
-    expect(cfg.defaultJSExtensions).toBeTruthy();
-    expect(cfg.baseURL).toBe('abc');
+    expect(cfg.defaultJSExtensions).to.be.true;
+    expect(cfg.baseURL).to.be.equal('abc');
   });
 
   it('can serialize updated configuration', () => {
@@ -49,7 +49,7 @@ describe('Config Serializer', () => {
     };
 
     let str = serializeConfig(cfg);
-    expect(str).toBe(outCfg);
+    expect(str).to.be.equal(outCfg);
   });
 
   it('can serialize System configuration', () => {
@@ -59,7 +59,7 @@ describe('Config Serializer', () => {
       `System.config({
   defaultJSExtensions: true
 });`;
-    expect(str).toBe(outCfg);
+    expect(str).to.be.equal(outCfg);
   });
 
   it('can serialize SystemJS configuration', () => {
@@ -69,14 +69,14 @@ describe('Config Serializer', () => {
   defaultJSExtensions: true
 });`;
     let str = serializeConfig(cfg, true);
-    expect(str).toBe(outCfg);
+    expect(str).to.be.equal(outCfg);
   });
 
   it('can detect System and/or SystemJS', () => {
     let inpCfg = 'System.config({ defaultJSExtensions: true })';
     let inpCfg2 = 'SystemJS.config({ valueFrom2ndFile : true })';
-    expect(isSystem(inpCfg)).toBeTruthy();
-    expect(isSystemJS(inpCfg2)).toBeTruthy();
+    expect(isSystem(inpCfg)).to.be.true;
+    expect(isSystemJS(inpCfg2)).to.be.true;
   });
 
   it('does not quote top-level keys', () => {
@@ -114,6 +114,6 @@ describe('Config Serializer', () => {
 });`;
 
     let str = serializeConfig(cfg);
-    expect(str).toBe(out);
+    expect(str).to.be.equal(out);
   });
 });

@@ -1,7 +1,6 @@
 export type FetchHook = (load: any, fetch: (load: any) => any) => void;
 export type Inject = { indexFile: string, destFile: string };
 
-
 export type ConfigBody = {
   skip?: boolean;
   htmlimport?: boolean;
@@ -29,11 +28,9 @@ export type  ConfigHeader = {
 };
 
 export type Config = ConfigHeader  & { bundles: {[name: string]: ConfigBody }};
-
 export type BundleConfig = ConfigHeader & ConfigBody & { bundleName: string };
-
 export interface SystemConfig {
-  defaultJSExtensions:boolean;
+  defaultJSExtensions: boolean;
   baseURL: string;
   map: any;
   depCache: any;

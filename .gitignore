@@ -4,3 +4,4 @@ node_modules
 .DS_STORE
 build/reports
 dist/
+.log
