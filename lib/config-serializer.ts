@@ -100,5 +100,6 @@ export function getAppConfig(configPath: string | string[]) {
 }
 
 export function saveAppConfig(configPath: string, config: SystemConfig) {
+  console.log('Writing file..');
   fs.writeFileSync(configPath, serializeConfig(config, isSystemJS(fs.readFileSync(configPath, 'utf8'))));
 }

@@ -5,13 +5,13 @@ import * as Builder from 'systemjs-builder';
 import * as path from 'path';
 import * as _ from 'lodash';
 import * as utils from './utils';
-import { getAppConfig, saveAppConfig } from './config-serializer';
+import * as serializer from './config-serializer';
 import * as htmlminifier from 'html-minifier';
 import * as CleanCSS from 'clean-css';
 import { BundleConfig, FetchHook } from "./models";
 
 function createBuildExpression(cfg: BundleConfig) {
-  let appCfg = getAppConfig(cfg.configPath);
+  let appCfg = serializer.getAppConfig(cfg.configPath);
   let includes = cfg.includes as string[];
   let excludes = cfg.excludes;
 
@@ -87,7 +87,7 @@ export function depCache(cfg: BundleConfig): Promise<any> {
 
 function createBuilder(cfg: BundleConfig) {
   let builder = new Builder(cfg.baseURL);
-  let appCfg = getAppConfig(cfg.configPath);
+  let appCfg = serializer.getAppConfig(cfg.configPath);
   delete appCfg.baseURL;
 
   builder.config(appCfg);
@@ -101,12 +101,12 @@ function _depCache(buildExpression: string, cfg: BundleConfig) {
     .then(tree => {
       let depCache = builder.getDepCache(tree);
       let configPath = cfg.injectionConfigPath as string;
-      let appCfg = getAppConfig(configPath);
+      let appCfg = serializer.getAppConfig(configPath);
       let dc = appCfg.depCache || {};
 
       _.assign(dc, depCache);
       appCfg.depCache = dc;
-      saveAppConfig(configPath, appCfg);
+      serializer.saveAppConfig(configPath, appCfg);
       return Promise.resolve();
     });
 }
@@ -117,9 +117,11 @@ function _bundle(buildExpression: string, cfg: BundleConfig) {
   return builder.bundle(buildExpression, cfg.options)
     .then((output) => {
       let outfile = utils.getOutFileName(output.source, cfg.bundleName + '.js', cfg.options.rev as boolean);
-      writeOutput(output, outfile, cfg.baseURL, cfg.force as boolean, cfg.options.sourceMaps);
+      let outPath = path.resolve(cfg.baseURL, outfile);
+
+      writeOutput(output, outPath, cfg.force as boolean, cfg.options.sourceMaps);
       if (cfg.options.sourceMaps) {
-        writeSourcemaps(output, outfile, cfg.baseURL, cfg.force as boolean);
+        writeSourcemaps(output, `${outPath}.map`, cfg.force as boolean);
       }
       if (cfg.options.inject) {
         injectBundle(builder, output, outfile, cfg);
@@ -128,9 +130,7 @@ function _bundle(buildExpression: string, cfg: BundleConfig) {
     });
 }
 
-export function writeSourcemaps(output: Builder.Output, outfile: string, baseURL: string, force: boolean) {
-  let outPath = path.resolve(baseURL, outfile) + '.map';
-
+export function writeSourcemaps(output: Builder.Output, outPath: string, force: boolean) {
   if (fs.existsSync(outPath)) {
     if (!force) {
       throw new Error(`A source map named '${outPath}' already exists. Use the --force option to overwrite it.`);
@@ -147,9 +147,7 @@ export function writeSourcemaps(output: Builder.Output, outfile: string, baseURL
   fs.writeFileSync(outPath, output.sourceMap);
 }
 
-export function writeOutput(output: Builder.Output, outfile: string, baseURL: string, force: boolean, sourceMap: boolean) {
-  let outPath = path.resolve(baseURL, outfile);
-
+export function writeOutput(output: Builder.Output, outPath: string, force: boolean, sourceMap: boolean) {
   if (fs.existsSync(outPath)) {
     if (!force) {
       throw new Error(`A bundle named '${outPath}' already exists. Use the --force option to overwrite it.`);
@@ -174,14 +172,20 @@ export function writeOutput(output: Builder.Output, outfile: string, baseURL: st
 export function injectBundle(builder: Builder.BuilderInstance, output: Builder.Output, outfile: string, cfg: BundleConfig) {
   let configPath = cfg.injectionConfigPath as string;
   let bundleName = builder.getCanonicalName(sysUtil.toFileURL(path.resolve(cfg.baseURL, outfile)));
-  let appCfg = getAppConfig(configPath);
+  let appCfg = serializer.getAppConfig(configPath);
 
   if (!appCfg.bundles) {
     appCfg.bundles = {};
   }
 
+    console.log('configPath', configPath);
+    console.log('appCfg', appCfg);
+    console.log('bundleName', bundleName);
+
   appCfg.bundles[bundleName] = output.modules.sort();
-  saveAppConfig(configPath, appCfg);
+
+  console.log('serializer', serializer);
+  serializer.saveAppConfig(configPath, appCfg);
 }
 
 export function getFullModuleName(moduleName: string, map: any) {

@@ -23,7 +23,7 @@
   },
   "scripts": {
     "lint": "tslint --project tsconfig.json",
-    "test": "mocha -r ts-node/register test/*.spec.ts",
+   "test": "mocha --reporter spec --compilers ts:ts-node/register test/**/*.spec.ts",
     "prebuild:compile": "rimraf 'dist/**'",
     "build:compile": "tsc --project tsconfig.json --outDir dist --module commonjs",
     "build": "npm run build:compile"

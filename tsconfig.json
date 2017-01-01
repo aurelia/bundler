@@ -9,6 +9,7 @@
       "es2017"
     ],
     "outDir": "dist",
+    "sourceMap": true,
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -26,6 +27,7 @@
     ".vscode",
     "dist",
     "doc",
-    "node_modules"
+    "node_modules",
+    "test"
   ]
 }

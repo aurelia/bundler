@@ -6,7 +6,7 @@ export type ConfigBody = {
   htmlimport?: boolean;
   includes: string[] | string;
   excludes: string[];
-  injectionConfigPath?: string;
+  outputPath?: string,
   options: {
     inject: boolean | Inject
     sourceMaps: boolean,
