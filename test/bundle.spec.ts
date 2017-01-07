@@ -12,12 +12,20 @@ let expect = chai.expect;
 chai.use(sinonChi);
 
 describe('inject bundle', () => {
+  let sandbox: sinon.SinonSandbox; 
+  beforeEach(() => {
+    sandbox = sinon.sandbox.create();
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+  });
+
   it('saves bundle config to disk', () => {
-    let sandbox = sinon.sandbox.create();
     let appCfg = { bundles: {} };
     let configPath = '';
 
-    sandbox.stub(serializer, 'saveAppConfig').returns(0);
+    sandbox.stub(serializer, 'saveAppConfig')
     sandbox.stub(serializer, 'getAppConfig').returns(appCfg);
     sandbox.stub(sysUtil, 'toFileURL');
 
@@ -27,14 +35,15 @@ describe('inject bundle', () => {
         injectionConfigPath: configPath
       }
     };
+
     let builder = new Builder('.');
     sandbox.stub(builder, 'getCanonicalName');
+
     let output = { modules: [], source: '', sourceMap: '' };
     let outfile = '';
 
     bundler.injectBundle(builder, output, outfile, cfg as any as  BundleConfig);
     expect(serializer.saveAppConfig).to.have.been.calledOnce;
-    sandbox.restore();
   });
 });
 
