@@ -8,6 +8,7 @@ import * as utils from './utils';
 import * as serializer from './config-serializer';
 import * as htmlminifier from 'html-minifier';
 import * as CleanCSS from 'clean-css';
+import { createBuilder } from './builder-factory';
 import { BundleConfig, FetchHook } from "./models";
 
 function createBuildExpression(cfg: BundleConfig) {
@@ -85,16 +86,6 @@ export function depCache(cfg: BundleConfig): Promise<any> {
   return _depCache(buildExpression, cfg);
 }
 
-function createBuilder(cfg: BundleConfig) {
-  let builder = new Builder(cfg.baseURL);
-  let appCfg = serializer.getAppConfig(cfg.configPath);
-  delete appCfg.baseURL;
-
-  builder.config(appCfg);
-  builder.config(cfg.builderCfg);
-  return builder;
-}
-
 function _depCache(buildExpression: string, cfg: BundleConfig) {
   let builder = createBuilder(cfg);
   return builder.trace(buildExpression, cfg.options)
@@ -113,11 +104,10 @@ function _depCache(buildExpression: string, cfg: BundleConfig) {
 
 function _bundle(buildExpression: string, cfg: BundleConfig) {
   let builder = createBuilder(cfg);
-
   return builder.bundle(buildExpression, cfg.options)
     .then((output) => {
       let outfile = utils.getOutFileName(output.source, cfg.bundleName + '.js', cfg.options.rev as boolean);
-      let outPath = path.resolve(cfg.baseURL, outfile);
+      let outPath = cfg.outputPath || path.resolve(cfg.baseURL, outfile);
 
       writeOutput(output, outPath, cfg.force as boolean, cfg.options.sourceMaps);
       if (cfg.options.sourceMaps) {
@@ -177,14 +167,7 @@ export function injectBundle(builder: Builder.BuilderInstance, output: Builder.O
   if (!appCfg.bundles) {
     appCfg.bundles = {};
   }
-
-    console.log('configPath', configPath);
-    console.log('appCfg', appCfg);
-    console.log('bundleName', bundleName);
-
   appCfg.bundles[bundleName] = output.modules.sort();
-
-  console.log('serializer', serializer);
   serializer.saveAppConfig(configPath, appCfg);
 }
 
