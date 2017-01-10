@@ -68,6 +68,7 @@ export function getBundleConfig(bundleCfg: ConfigBody, bundleName: string, confi
     configPath: config.configPath,
     excludes: [],
     includes: [],
+    outputPath: config.outputPath,
     injectionConfigPath: config.injectionConfigPath,
     force: config.force,
     options: {

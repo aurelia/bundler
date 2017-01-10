@@ -10,6 +10,7 @@ import * as htmlminifier from 'html-minifier';
 import * as CleanCSS from 'clean-css';
 import { createBuilder } from './builder-factory';
 import { BundleConfig, FetchHook } from "./models";
+import * as mkdirp from 'mkdirp';
 
 function createBuildExpression(cfg: BundleConfig) {
   let appCfg = serializer.getAppConfig(cfg.configPath);
@@ -67,6 +68,7 @@ function createFetchHook(cfg: BundleConfig): FetchHook {
 }
 
 export function bundle(cfg: BundleConfig) {
+  console.warn("Bundling...");
   let buildExpression = createBuildExpression(cfg);
   cfg.options.fetch = createFetchHook(cfg);
 
@@ -107,8 +109,7 @@ function _bundle(buildExpression: string, cfg: BundleConfig) {
   return builder.bundle(buildExpression, cfg.options)
     .then((output) => {
       let outfile = utils.getOutFileName(output.source, cfg.bundleName + '.js', cfg.options.rev as boolean);
-      let outPath = cfg.outputPath || path.resolve(cfg.baseURL, outfile);
-
+      let outPath = createOutputPath(cfg.baseURL, outfile, cfg.outputPath);
       writeOutput(output, outPath, cfg.force as boolean, cfg.options.sourceMaps);
       if (cfg.options.sourceMaps) {
         writeSourcemaps(output, `${outPath}.map`, cfg.force as boolean);
@@ -118,6 +119,11 @@ function _bundle(buildExpression: string, cfg: BundleConfig) {
       }
       return Promise.resolve();
     });
+}
+
+function createOutputPath(baseURL: string, outfile: string, outputPath?: string) {
+  console.log('createing output path');
+  return outputPath ? path.resolve(outputPath, outfile) : path.resolve(baseURL, outfile);
 }
 
 export function writeSourcemaps(output: Builder.Output, outPath: string, force: boolean) {
@@ -131,7 +137,7 @@ export function writeSourcemaps(output: Builder.Output, outPath: string, force: 
     let dirPath = path.dirname(outPath);
 
     if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath);
+      mkdirp.sync(dirPath);
     }
   }
   fs.writeFileSync(outPath, output.sourceMap);
@@ -148,7 +154,7 @@ export function writeOutput(output: Builder.Output, outPath: string, force: bool
     let dirPath = path.dirname(outPath);
 
     if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath);
+      mkdirp.sync(dirPath);
     }
   }
   let source = output.source;
