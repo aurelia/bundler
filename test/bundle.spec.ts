@@ -12,7 +12,7 @@ let expect = chai.expect;
 chai.use(sinonChi);
 
 describe('inject bundle', () => {
-  let sandbox: sinon.SinonSandbox; 
+  let sandbox: sinon.SinonSandbox;
   beforeEach(() => {
     sandbox = sinon.sandbox.create();
   });
@@ -82,7 +82,7 @@ describe('write bundle output', () => {
       expect(() => {
         bundler.writeOutput(
           { source: 'bundler source', sourceMap: '', modules: [] },
-          'outfile.js',false, false);
+          'outfile.js', false, false);
       }).to.throw(/A bundle named/);
 
       expect(fs.writeFileSync).to.not.have.been.calledOnce;
