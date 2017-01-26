@@ -12,12 +12,20 @@ let expect = chai.expect;
 chai.use(sinonChi);
 
 describe('inject bundle', () => {
+  let sandbox: sinon.SinonSandbox;
+  beforeEach(() => {
+    sandbox = sinon.sandbox.create();
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+  });
+
   it('saves bundle config to disk', () => {
-    let sandbox = sinon.sandbox.create();
     let appCfg = { bundles: {} };
     let configPath = '';
 
-    sandbox.stub(serializer, 'saveAppConfig');
+    sandbox.stub(serializer, 'saveAppConfig')
     sandbox.stub(serializer, 'getAppConfig').returns(appCfg);
     sandbox.stub(sysUtil, 'toFileURL');
 
@@ -27,14 +35,15 @@ describe('inject bundle', () => {
         injectionConfigPath: configPath
       }
     };
+
     let builder = new Builder('.');
     sandbox.stub(builder, 'getCanonicalName');
+
     let output = { modules: [], source: '', sourceMap: '' };
     let outfile = '';
 
     bundler.injectBundle(builder, output, outfile, cfg as any as  BundleConfig);
     expect(serializer.saveAppConfig).to.have.been.calledOnce;
-    sandbox.restore();
   });
 });
 
@@ -48,10 +57,10 @@ describe('write bundle output', () => {
     sandbox.restore();
   });
 
-  it('writes the bundler file to disk', () => {
+  it('writes the bundle file to disk', () => {
     sandbox.stub(fs, 'writeFileSync');
     sandbox.stub(fs, 'mkdirSync');
-    bundler.writeOutput({ source: 'sdfsdf', sourceMap: '', modules: [] }, 'the outfile', 'the base URL', true, false);
+    bundler.writeOutput({ source: 'sdfsdf', sourceMap: '', modules: [] }, 'outfile.js', true, false);
     expect(fs.writeFileSync).to.have.been.calledOnce;
   });
 
@@ -62,7 +71,7 @@ describe('write bundle output', () => {
 
     bundler.writeOutput(
        { source: 'bundler source', sourceMap: '', modules: [] },
-       'outfile', 'base URL', true, false);
+       'outfile', true, false);
     expect(fs.mkdirSync).to.have.been.calledOnce;
   });
 
@@ -73,8 +82,7 @@ describe('write bundle output', () => {
       expect(() => {
         bundler.writeOutput(
           { source: 'bundler source', sourceMap: '', modules: [] },
-          'outfile',
-          'base URL', false, false);
+          'outfile.js', false, false);
       }).to.throw(/A bundle named/);
 
       expect(fs.writeFileSync).to.not.have.been.calledOnce;
@@ -86,10 +94,8 @@ describe('write bundle output', () => {
       sandbox.stub(fs, 'writeFileSync');
 
       expect(() => {
-        bundler.writeOutput(
-          { source: 'bundler source', sourceMap: '', modules: [] },
-          'outfile',
-          'base URL', true, false);
+        bundler.writeOutput({ source: 'bundler source', sourceMap: '', modules: [] },
+          'outfile.js', true, false);
       }).to.not.throw(/A bundle named/);
 
       expect(fs.unlinkSync).to.have.been.calledOnce;

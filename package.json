@@ -23,9 +23,9 @@
   },
   "scripts": {
     "lint": "tslint --project tsconfig.json",
-    "test": "mocha -r ts-node/register test/*.spec.ts",
+    "test": "mocha --reporter spec --compilers ts:ts-node/register test/**/*.spec.ts",
     "prebuild:compile": "rimraf 'dist/**'",
-    "build:compile": "tsc --project tsconfig.json --outDir dist --module commonjs",
+    "build:compile": "tsc --project tsconfig.dist.json --outDir dist --module commonjs",
     "build": "npm run build:compile"
   },
   "dependencies": {
@@ -36,6 +36,7 @@
     "globby": "^2.0.0",
     "html-minifier": "^1.1.1",
     "lodash": "^3.10.1",
+    "mkdirp": "^0.5.1",
     "rev-hash": "^1.0.0",
     "rev-path": "^1.0.0",
     "systemjs-builder": "^0.15.33"
@@ -49,6 +50,7 @@
     "@types/glob": "^5.0.30",
     "@types/html-minifier": "^1.1.30",
     "@types/lodash": "^4.14.38",
+    "@types/mkdirp": "^0.3.29",
     "@types/mocha": "^2.2.32",
     "@types/node": "^6.0.51",
     "@types/sinon": "^1.16.31",
