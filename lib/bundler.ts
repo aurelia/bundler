@@ -121,7 +121,7 @@ function _bundle(buildExpression: string, cfg: BundleConfig) {
 }
 
 function createOutputPath(baseURL: string, outfile: string, outputPath?: string) {
-  return outputPath ? path.resolve(outputPath) : path.resolve(baseURL, outfile);
+  return outputPath ? path.resolve(outputPath, path.basename(outfile)) : path.resolve(baseURL, outfile);
 }
 
 export function writeSourcemaps(output: Builder.Output, outPath: string, force: boolean) {

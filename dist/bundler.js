@@ -98,7 +98,7 @@ function _bundle(buildExpression, cfg) {
     });
 }
 function createOutputPath(baseURL, outfile, outputPath) {
-    return outputPath ? path.resolve(outputPath) : path.resolve(baseURL, outfile);
+    return outputPath ? path.resolve(outputPath, path.basename(outfile)) : path.resolve(baseURL, outfile);
 }
 function writeSourcemaps(output, outPath, force) {
     if (fs.existsSync(outPath)) {
