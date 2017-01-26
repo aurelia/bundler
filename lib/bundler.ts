@@ -68,7 +68,6 @@ function createFetchHook(cfg: BundleConfig): FetchHook {
 }
 
 export function bundle(cfg: BundleConfig) {
-  console.warn("Bundling...");
   let buildExpression = createBuildExpression(cfg);
   cfg.options.fetch = createFetchHook(cfg);
 
@@ -122,8 +121,7 @@ function _bundle(buildExpression: string, cfg: BundleConfig) {
 }
 
 function createOutputPath(baseURL: string, outfile: string, outputPath?: string) {
-  console.log('createing output path');
-  return outputPath ? path.resolve(outputPath, outfile) : path.resolve(baseURL, outfile);
+  return outputPath ? path.resolve(outputPath) : path.resolve(baseURL, outfile);
 }
 
 export function writeSourcemaps(output: Builder.Output, outPath: string, force: boolean) {
@@ -131,11 +129,9 @@ export function writeSourcemaps(output: Builder.Output, outPath: string, force: 
     if (!force) {
       throw new Error(`A source map named '${outPath}' already exists. Use the --force option to overwrite it.`);
     }
-
     fs.unlinkSync(outPath);
   } else {
     let dirPath = path.dirname(outPath);
-
     if (!fs.existsSync(dirPath)) {
       mkdirp.sync(dirPath);
     }
