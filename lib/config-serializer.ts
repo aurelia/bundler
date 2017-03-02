@@ -1,15 +1,12 @@
 import * as vm from 'vm';
 import * as fs from 'fs';
+import * as _ from 'lodash';
 import {SystemConfig} from './models';
 
 export function readConfig(cfgCode: string[]) {
   let cfg: any = {};
   let configFunc = (systemCfg: any) => {
-    for (let key in systemCfg) {
-      if (systemCfg.hasOwnProperty(key)) {
-        cfg[key] = systemCfg[key];
-      }
-    }
+    _.merge(cfg, systemCfg);
   };
 
   let sandbox = {
