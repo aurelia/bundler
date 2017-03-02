@@ -28,6 +28,42 @@ describe('Config Serializer', () => {
     expect(cfg.baseURL).to.be.equal('abc');
   });
 
+  describe('Multiple config calls', () => {
+    it('reads config from single file', () => {
+      let inpCfg = `
+SystemJS.config({ 
+  packages: {
+    "aurelia-animator-css": {
+      "map": {
+        "aurelia-metadata": "npm:aurelia-metadata@1.0.3",
+      }
+    }
+  }
+});
+SystemJS.config({ 
+  packages: {
+    "siopa-skeleton": {
+      "format": "amd"
+    }
+  }
+})`;
+
+      let cfg = readConfig([inpCfg]);
+      expect(cfg.packages['aurelia-animator-css'].map['aurelia-metadata']).to.be.equal('npm:aurelia-metadata@1.0.3');
+      expect(cfg.packages['siopa-skeleton'].format).to.be.equal('amd');
+    });
+
+    it('should extend the config not orverrite it', () => {
+      let inpCfg = 'System.config({ defaultJSExtensions: true }); System.config({ baseURL : "abc" })';
+      let cfg = readConfig([inpCfg]);
+      expect(cfg.defaultJSExtensions).to.be.true;
+      expect(cfg.baseURL).to.be.equal('abc');
+    });
+  });
+
+
+
+
   it('can serialize updated configuration', () => {
     let cfg = readConfig([inpCfg]);
     let outCfg =
