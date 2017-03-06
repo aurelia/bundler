@@ -41,4 +41,5 @@ export interface SystemConfig {
     map: any;
     depCache: any;
     bundles: any;
+    packages?: any;
 }

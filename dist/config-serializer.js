@@ -1,14 +1,11 @@
 "use strict";
 var vm = require("vm");
 var fs = require("fs");
+var _ = require("lodash");
 function readConfig(cfgCode) {
     var cfg = {};
     var configFunc = function (systemCfg) {
-        for (var key in systemCfg) {
-            if (systemCfg.hasOwnProperty(key)) {
-                cfg[key] = systemCfg[key];
-            }
-        }
+        _.merge(cfg, systemCfg);
     };
     var sandbox = {
         System: {
