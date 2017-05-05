@@ -149,7 +149,18 @@ function injectBundle(builder, output, outfile, cfg) {
 }
 exports.injectBundle = injectBundle;
 function getFullModuleName(moduleName, map) {
-    var cleanName = function (n) { return n.replace(/^.*:/, '').replace(/@.*$/, ''); };
+    var cleanName = function (n) {
+        // strip leading 'registry' prefixes
+        var result = n.replace(/^.*:/, '');
+        // strip trailing version info
+        if (result.charAt(0) === '@') {
+            result = '@' + result.substr(1).replace(/@.*$/, '');
+        }
+        else {
+            result = result.replace(/@.*$/, '');
+        }
+        return result;
+    };
     var matches = Object.keys(map).filter(function (m) { return m === moduleName; });
     if (matches.length === 1) {
         return moduleName;
