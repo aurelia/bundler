@@ -16,7 +16,7 @@
   },
   "license": "MIT",
   "author": "Rob Eisenberg <rob@bluespire.com> (http://robeisenberg.com/)",
-  "main": "dist/lib/index.js",
+  "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "http://github.com/aurelia/bundler"
