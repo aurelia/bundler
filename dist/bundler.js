@@ -88,7 +88,7 @@ function _bundle(buildExpression, cfg) {
         var outfile = utils.getOutFileName(output.source, cfg.bundleName + '.js', cfg.options.rev);
         var outPath = createOutputPath(cfg.baseURL, outfile, cfg.outputPath);
         writeOutput(output, outPath, cfg.force, cfg.options.sourceMaps);
-        if (cfg.options.sourceMaps) {
+        if (cfg.options.sourceMaps && cfg.options.sourceMaps !== 'inline') {
             writeSourcemaps(output, outPath + ".map", cfg.force);
         }
         if (cfg.options.inject) {
@@ -130,7 +130,7 @@ function writeOutput(output, outPath, force, sourceMap) {
         }
     }
     var source = output.source;
-    if (sourceMap) {
+    if (sourceMap && sourceMap !== 'inline') {
         var sourceMapFileName = path.basename(outPath) + '.map';
         source += '\n//# sourceMappingURL=' + sourceMapFileName;
     }
