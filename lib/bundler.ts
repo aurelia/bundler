@@ -110,9 +110,11 @@ function _bundle(buildExpression: string, cfg: BundleConfig) {
       let outfile = utils.getOutFileName(output.source, cfg.bundleName + '.js', cfg.options.rev as boolean);
       let outPath = createOutputPath(cfg.baseURL, outfile, cfg.outputPath);
       writeOutput(output, outPath, cfg.force as boolean, cfg.options.sourceMaps);
-      if (cfg.options.sourceMaps) {
+
+      if (cfg.options.sourceMaps && cfg.options.sourceMaps !== 'inline') {
         writeSourcemaps(output, `${outPath}.map`, cfg.force as boolean);
       }
+
       if (cfg.options.inject) {
         injectBundle(builder, output, outfile, cfg);
       }
@@ -139,8 +141,9 @@ export function writeSourcemaps(output: Builder.Output, outPath: string, force: 
   fs.writeFileSync(outPath, output.sourceMap);
 }
 
-export function writeOutput(output: Builder.Output, outPath: string, force: boolean, sourceMap: boolean) {
+export function writeOutput(output: Builder.Output, outPath: string, force: boolean, sourceMap: boolean | string) {
   if (fs.existsSync(outPath)) {
+
     if (!force) {
       throw new Error(`A bundle named '${outPath}' already exists. Use the --force option to overwrite it.`);
     }
@@ -154,10 +157,12 @@ export function writeOutput(output: Builder.Output, outPath: string, force: bool
     }
   }
   let source = output.source;
-  if (sourceMap) {
+
+  if (sourceMap && sourceMap !== 'inline') {
     let sourceMapFileName = path.basename(outPath) + '.map';
     source += '\n//# sourceMappingURL=' + sourceMapFileName;
   }
+
   fs.writeFileSync(outPath, source);
 }
 
