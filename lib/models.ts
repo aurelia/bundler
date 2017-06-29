@@ -8,7 +8,7 @@ export type ConfigBody = {
   excludes: string[];
   options: {
     inject: boolean | Inject
-    sourceMaps: boolean,
+    sourceMaps: boolean | string,
     depCache: boolean,
     minify: boolean,
     htmlminopts?: any,
