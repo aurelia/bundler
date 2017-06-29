@@ -25,7 +25,7 @@ describe('inject bundle', () => {
     let appCfg = { bundles: {} };
     let configPath = '';
 
-    sandbox.stub(serializer, 'saveAppConfig')
+    sandbox.stub(serializer, 'saveAppConfig');
     sandbox.stub(serializer, 'getAppConfig').returns(appCfg);
     sandbox.stub(sysUtil, 'toFileURL');
 
