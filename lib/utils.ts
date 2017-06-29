@@ -44,6 +44,7 @@ export function getHTMLMinOpts(opts: any) {
     removeRedundantAttributes: false,
     removeScriptTypeAttributes: true,
     removeStyleLinkTypeAttributes: true,
+    ignoreCustomFragments: [/\${[\s\S]*}/],
     useShortDoctype: true,
     minifyCSS: true,
     minifyJS: true
