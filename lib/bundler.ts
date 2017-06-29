@@ -174,16 +174,16 @@ export function injectBundle(builder: Builder.BuilderInstance, output: Builder.O
 }
 
 export function getFullModuleName(moduleName: string, map: any) {
-  var cleanName = function (n: string) {
+  let cleanName = (n: string) => {
       // strip leading 'registry' prefixes
-      var result = n.replace(/^.*:/, '');
+      let result = n.replace(/^.*:/, '');
       // strip trailing version info
       if (result.charAt(0) === '@') {
           result = '@' + result.substr(1).replace(/@.*$/, '');
-      }
-      else {
+      } else {
           result = result.replace(/@.*$/, '');
       }
+
       return result;
   };
 
