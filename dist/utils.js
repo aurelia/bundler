@@ -40,6 +40,7 @@ function getHTMLMinOpts(opts) {
         removeRedundantAttributes: false,
         removeScriptTypeAttributes: true,
         removeStyleLinkTypeAttributes: true,
+        ignoreCustomFragments: [/\${[\s\S]*}/],
         useShortDoctype: true,
         minifyCSS: true,
         minifyJS: true
