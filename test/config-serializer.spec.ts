@@ -40,7 +40,7 @@ SystemJS.config({
     }
   }
 });
-SystemJS.config({ 
+SystemJS.config({
   packages: {
     "siopa-skeleton": {
       "format": "amd"
@@ -60,9 +60,6 @@ SystemJS.config({
       expect(cfg.baseURL).to.be.equal('abc');
     });
   });
-
-
-
 
   it('can serialize updated configuration', () => {
     let cfg = readConfig([inpCfg]);
