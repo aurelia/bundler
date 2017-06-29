@@ -31,7 +31,7 @@ describe('Config Serializer', () => {
   describe('Multiple config calls', () => {
     it('reads config from single file', () => {
       let inpCfg = `
-SystemJS.config({ 
+SystemJS.config({
   packages: {
     "aurelia-animator-css": {
       "map": {
