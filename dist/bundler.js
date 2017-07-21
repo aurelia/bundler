@@ -6,7 +6,7 @@ var path = require("path");
 var _ = require("lodash");
 var utils = require("./utils");
 var serializer = require("./config-serializer");
-var htmlminifier = require("html-minifier");
+var Minimize = require("minimize");
 var CleanCSS = require("clean-css");
 var builder_factory_1 = require("./builder-factory");
 var mkdirp = require("mkdirp");
@@ -36,7 +36,8 @@ function createFetchHook(cfg) {
         if (ext === '.html' && cfg.options.minify) {
             var content = fs.readFileSync(address, 'utf8');
             var opts = utils.getHTMLMinOpts(cfg.options.htmlminopts);
-            return htmlminifier.minify(content, opts);
+            var minifier = new Minimize(opts);
+            return minifier.parse(content);
         }
         if (ext === '.css' && cfg.options.minify) {
             var content = fs.readFileSync(address, 'utf8');
