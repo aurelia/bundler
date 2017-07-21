@@ -36,6 +36,20 @@ declare module 'systemjs-builder/lib/utils.js' {
   export = Utils;
 }
 
+declare module 'minimize' {
+  let Minimize: Minimize.MinimizeConstructor;
+  namespace Minimize {
+    export interface MinimizeConstructor {
+      new (options: any): MinimizeInstance;
+    }
+
+    export interface MinimizeInstance {
+      parse(content: string): string;
+    }
+  }
+  export = Minimize;
+}
+
 declare module 'rev-hash' {
   function revHash(buf: Buffer): string;
   namespace revHash {}
