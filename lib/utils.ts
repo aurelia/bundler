@@ -33,21 +33,7 @@ export function validateConfig(config: Config) {
 
 export function getHTMLMinOpts(opts: any) {
   return _.defaultsDeep(opts, {
-    caseSensitive: true,
-    collapseBooleanAttributes: true,
-    collapseWhitespace: true,
-    conservativeCollapse: true,
-    removeCDATASectionsFromCDATA: true,
-    removeComments: true,
-    removeCommentsFromCDATA: true,
-    removeEmptyAttributes: true,
-    removeRedundantAttributes: false,
-    removeScriptTypeAttributes: true,
-    removeStyleLinkTypeAttributes: true,
-    ignoreCustomFragments: [/\${[\s\S]*}/],
-    useShortDoctype: true,
-    minifyCSS: true,
-    minifyJS: true
+    quotes: true
   });
 }
 
