@@ -6,7 +6,7 @@ import * as path from 'path';
 import * as _ from 'lodash';
 import * as utils from './utils';
 import * as serializer from './config-serializer';
-import * as Minimize from 'minimize';
+import * as minifier from 'html-minifier';
 import * as CleanCSS from 'clean-css';
 import { createBuilder } from './builder-factory';
 import { BundleConfig, FetchHook } from "./models";
@@ -46,8 +46,7 @@ function createFetchHook(cfg: BundleConfig): FetchHook {
     if (ext === '.html' && cfg.options.minify) {
       let content = fs.readFileSync(address, 'utf8');
       let opts = utils.getHTMLMinOpts(cfg.options.htmlminopts);
-      let minifier = new Minimize(opts);
-      return minifier.parse(content);
+      return minifier.minify(content, opts);
     }
 
     if (ext === '.css' && cfg.options.minify) {
