@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var Promise = require("bluebird");
 var cheerio = require("cheerio");
 var fs = require("fs");

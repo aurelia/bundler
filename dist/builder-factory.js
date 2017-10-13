@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var Builder = require("systemjs-builder");
 var config_serializer_1 = require("./config-serializer");
 function createBuilder(cfg) {

@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
 var revPath = require("rev-path");
 var revHash = require("rev-hash");
@@ -29,7 +30,21 @@ function validateConfig(config) {
 exports.validateConfig = validateConfig;
 function getHTMLMinOpts(opts) {
     return _.defaultsDeep(opts, {
-        quotes: true
+        caseSensitive: true,
+        collapseBooleanAttributes: true,
+        collapseWhitespace: true,
+        conservativeCollapse: true,
+        removeCDATASectionsFromCDATA: true,
+        removeComments: true,
+        removeCommentsFromCDATA: true,
+        removeEmptyAttributes: true,
+        removeRedundantAttributes: false,
+        removeScriptTypeAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        ignoreCustomFragments: [/\${[\s\S]*?}/],
+        useShortDoctype: true,
+        minifyCSS: true,
+        minifyJS: true
     });
 }
 exports.getHTMLMinOpts = getHTMLMinOpts;

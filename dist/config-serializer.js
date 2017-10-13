@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var vm = require("vm");
 var fs = require("fs");
 var _ = require("lodash");

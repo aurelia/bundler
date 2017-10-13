@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("fs");
 var Promise = require("bluebird");
 var sysUtil = require("systemjs-builder/lib/utils.js");
@@ -6,7 +7,7 @@ var path = require("path");
 var _ = require("lodash");
 var utils = require("./utils");
 var serializer = require("./config-serializer");
-var Minimize = require("minimize");
+var minifier = require("html-minifier");
 var CleanCSS = require("clean-css");
 var builder_factory_1 = require("./builder-factory");
 var mkdirp = require("mkdirp");
@@ -36,8 +37,7 @@ function createFetchHook(cfg) {
         if (ext === '.html' && cfg.options.minify) {
             var content = fs.readFileSync(address, 'utf8');
             var opts = utils.getHTMLMinOpts(cfg.options.htmlminopts);
-            var minifier = new Minimize(opts);
-            return minifier.parse(content);
+            return minifier.minify(content, opts);
         }
         if (ext === '.css' && cfg.options.minify) {
             var content = fs.readFileSync(address, 'utf8');
