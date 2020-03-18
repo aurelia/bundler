@@ -31,7 +31,7 @@
   "dependencies": {
     "bluebird": "^2.9.25",
     "cheerio": "^0.22.0",
-    "clean-css": "^3.4.9",
+    "clean-css": "^4.1.11",
     "glob": "^5.0.9",
     "globby": "^2.0.0",
     "html-minifier": "^3.5.5",
